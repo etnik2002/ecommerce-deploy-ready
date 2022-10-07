@@ -1,0 +1,194 @@
+block content
+  head
+    link(rel="stylesheet", href="/css/style.css")
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+    link(rel="stylesheet", href="/css/footer.css")
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+   
+    
+    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home
+              |           Home
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/products')
+              i.fa.fa-envelope-o
+                span.badge.bg-danger #{allProducts}
+              |           Buy
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe
+              | Profile
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+      hr
+ 
+
+    if message.length > 0
+      .container
+        h1(class="alert alert-success") #{message}
+           
+    if isFeatured.length > 0
+      h2(style="text-align:center") Featured products
+        each product in isFeatured
+          .container.mt-5.mb-5
+            .d-flex.justify-content-center.row
+              .col-md-10
+                .row.p-2.bg-white.border.rounded
+                  .col-md-3.mt-1
+                    a(href="/products/"+product._id) 
+                      img.img-fluid.img-responsive.rounded.product-image(src="/images/products/"+product.prodImg[0], alt=product.name style="width:30%; height:50%") 
+                  .col-md-6.mt-1
+                    a(href="/products/"+product._id) 
+                      h5 Product Name : #{product.prodName}
+                    .d-flex.flex-row
+                      .ratings.mr-2
+                        i.fa.fa-star
+                        i.fa.fa-star
+                        i.fa.fa-star
+                        i.fa.fa-star
+                      span 
+                    //- .mt-1.mb-1.spec-1
+                    //-   span Category : #{product.prodCategory}
+                    //-   span.dot 
+                    //-     br
+                    p.text-justify.text-truncate.para.mb-0
+                      | Description : #{product.prodDesc}
+                      br
+                      br
+                  .align-items-center.align-content-center.col-md-3.border-left.mt-1
+                    .d-flex.flex-row.align-items-center
+                      h4.mr-1 Price : #{parseFloat(product.prodPrice - (product.prodPrice * 5 / 100)).toFixed(2)}€
+                      span.strike-text(style="font-size:12px") #{parseFloat(product.prodPrice).toFixed(2)}€
+                    h6.text-success Free shipping
+                    .d-flex.flex-column.mt-4
+                      a.btn.btn-primary.btn-sm(type='button' href='/products/'+product._id) View Details
+                      //- button.btn.btn-outline-primary.btn-sm.mt-2(type='button') Add to wishlist
+    br
+    br
+    br
+    br
+    br
+      
+    h2(style="text-align:center") Choose products by their category
+    br
+    .container#categories(style="display:flex")
+      each category in categories 
+        .prodCat
+          a.category-name(href="/"+category._id style="text-align:center") #{category.catName}
+            .category-image
+              img(src="/images/categories/"+category.catImg, id="category-img" alt="") 
+    br
+    br
+
+
+    footer.footer
+      .column.footer
+        h3.footer About us
+        p.footer Phone : +389 76 224 065 or +389 70 923 651
+        p.footer Personal Emails : etnikz2002@gmail.com or dardanramani907@gmail.com
+        p.footer Info Email : ed-store.info@gmail.com
+        p.footer Designed By : Dardan Ramani
+        p.footer Developed By : Etnik Zeqiri
+ 
+      .column.footer
+        h3.footer Our Services
+        ul.footer
+          li.footer
+            a(href="/products" target="_blank").footer Buy high quality and first class products.
+          li.footer
+            a(href="#" ).footer We deliver products to our customer in the entire Macedonia.
+          li.footer
+            //- a( target="_blank" ).footer Mundësi për tu punësuar ne firmën tonë
+            //- a(href="/careers" target="_blank" ).footer Mundësi për tu punësuar ne firmën tonë
+
+      .column.footer
+        h3.footer Other services
+        ul.footer
+          li.footer
+            a.footer(href='http://auto-mk.com/' target="_blank") Auto-MK
+            br
+            a.footer(href='https://kupivreki.netlify.app/' target="_blank") Kupi Vreki MK
+          //- li.footer
+          //- a.footer(href='#') link 2
+          //- li.footer
+          //-   a.footer(href='#') link 3
+          //- li.footer
+          //-   a.footer(href='#') link 4
+
+          
+      .column.footer
+        h3.footer Get in touch with us!
+        form(action='https://formspree.io/f/mqkjpqyj' method='POST' )
+          label(style="color:white")
+            | Your email*
+            input(type='email' name='name' class="form-control" required)
+          br
+          label(style="color:white")
+            | Your message*:
+            br
+            textarea(name='message' class="form-control" required)
+          br
+          button(type='submit' class="btn btn-success") Send
+
+            //-  a.bardh(href=`mailto:etnikz2002@gmail.com`) Dërgo
+    //- if allUsers.length > 0
+    //-   p= allUsers.length
+    .bottom.footer
+      p.footer.copyright &copy; copyright Etnik Zeqiri 2022
+
+    
+    
+
+//- .container
+//-   .col-sm-4
+//-     .card
+//-       .image
+//-         img.categoryimg(src='https://images.solecollector.com/images/fl_lossy,q_auto/c_crop,h_1030,w_1830,x_85,y_557/lqedli2odj1labffhvy6/air-jordan-1-university-blue-release-date-555088-134-profile')
+//-       .card-inner
+//-         .header
+//-           h2.text Jordan 1 University Blue
+//-           h3.text
+//-             | 160€  
+//-         .content
+//-           p Content area
+//-   .col-sm-4
+//-     .card
+//-       .image
+//-         img.categoryimg(src='https://images.51microshop.com/12402/product/20210831/Perfectkicks_Air_Jordan_1_Retro_High_Dior_CN8607_002_1630397469606_9.jpg')
+//-       .card-inner
+//-         .header
+//-           h2 Jordan 1 Dior
+//-           h3
+//-             | Sub-Head
+//-         .content
+//-           p Content area
+//-   .col-sm-4
+//-     .card
+//-       .image
+//-         img.categoryimg(src='http://loremflickr.com/320/150?random=6')
+//-       .card-inner
+//-         .header
+//-           h2 Air Force 
+//-           h3
+//-             | Sub-Head
+//-         .content
+//-           p Content area
+
+          
+  
+

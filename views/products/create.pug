@@ -1,0 +1,203 @@
+block content
+  head
+    link(rel="stylesheet", href="/css/style.css")
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+
+   
+    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home
+              |           Home
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/products')
+              i.fa.fa-envelope-o
+                span.badge.bg-danger #{allProducts}
+              |           Buy
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe
+              | Profile
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+
+  .container 
+      h1 Create product
+      form(action="/products/create", method="post", enctype='multipart/form-data') 
+          label(for="prodName") Product Name*
+          input(type="text" name="prodName" placeholder="Product name" class="form-control" required)
+          br
+          label(for="prodDesc") Product Description*
+          input(type="text" name="prodDesc" placeholder="Product description" class="form-control" required)
+          br
+          label(for="prodPrice") Product Price*
+          input(type="number" name="prodPrice" placeholder="Product price" class="form-control" required)
+          br
+          .container
+            label(for="prodColor") Choose Colors*
+            br
+            input#vehicle1(type='checkbox' name='prodColor' value='Black')
+            label(for='prodColor')  Black
+
+
+
+            br
+            input#vehicle2(type='checkbox' name='prodColor' value='White')
+            label(for='prodColor')  White
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Gray')
+            label(for='prodColor')  Gray
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Green')
+            label(for='prodColor')  Green
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Red')
+            label(for='prodColor')  Red
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Yellow')
+            label(for='prodColor')  Yellow
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='NavyBlue')
+            label(for='prodColor')  Blue
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Blue')
+            label(for='prodColor')  Navy Blue
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Pink')
+            label(for='prodColor')  Pink
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Orange')
+            label(for='prodColor')  Orange
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Cream')
+            label(for='prodColor')  Cream
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Aqua')
+            label(for='prodColor')  Aqua
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Purple')
+            label(for='prodColor')  Purple
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Brown')
+            label(for='prodColor')  Brown
+            br
+
+          
+          br
+          label(for="prodCategory") Choose type*
+          select(name="prodCategory" class="form-control" required)  
+              option(value="") Choose type
+              each e in categories 
+                  option(value=e._id)= e.catName
+          br
+          .containerSizes
+            //- label(for="size" ) Product Sizes*
+            .shoes(style="margin-right:20px")
+              br
+              
+              label(for="") Shoes Sizes 
+              br
+              input#vehicle1(type='checkbox' name='size' value='30')
+              label(for='size')  30
+              br
+              input#vehicle2(type='checkbox' name='size' value='31')
+              label(for='size')  31
+              br
+              input#vehicle3(type='checkbox' name='size' value='32')
+              label(for='size')  32
+              br
+              input#vehicle3(type='checkbox' name='size' value='33')
+              label(for='size')  33
+              br
+              input#vehicle3(type='checkbox' name='size' value='34')
+              label(for='size')  34
+              br
+              input#vehicle3(type='checkbox' name='size' value='35')
+              label(for='size')  35
+              br
+              input#vehicle3(type='checkbox' name='size' value='36')
+              label(for='size')  36
+              br
+              input#vehicle3(type='checkbox' name='size' value='37')
+              label(for='size')  37
+              br
+              input#vehicle3(type='checkbox' name='size' value='38')
+              label(for='size')  38
+              br
+              input#vehicle3(type='checkbox' name='size' value='39')
+              label(for='size')  39
+              br
+              input#vehicle3(type='checkbox' name='size' value='40')
+              label(for='size')  40
+              br
+              input#vehicle3(type='checkbox' name='size' value='41')
+              label(for='size')  41
+              br
+              input#vehicle3(type='checkbox' name='size' value='42')
+              label(for='size')  42
+              br
+              input#vehicle3(type='checkbox' name='size' value='43')
+              label(for='size')  43
+              br
+              input#vehicle3(type='checkbox' name='size' value='44')
+              label(for='size')  44
+              br
+              input#vehicle3(type='checkbox' name='size' value='45')
+              label(for='size')  45
+              br
+              input#vehicle3(type='checkbox' name='size' value='46')
+              label(for='size')  46
+              br
+              input#vehicle3(type='checkbox' name='size' value='47')
+              label(for='size')  47
+              br
+            br
+            .clothes
+
+              br
+              //- input(type="text" name="size" placeholder="39,40,41 or s,m,x,xl" class="form-control" required)
+              label(for="") Clothes Sizes 
+              br
+              input#vehicle1(type='checkbox' name='size' value='XS')
+              label(for='size')  XS
+              br
+              input#vehicle2(type='checkbox' name='size' value='S')
+              label(for='size')  S
+              br
+              input#vehicle3(type='checkbox' name='size' value='M')
+              label(for='size')  M
+              br
+              input#vehicle3(type='checkbox' name='size' value='L')
+              label(for='size')  L
+              br
+              input#vehicle3(type='checkbox' name='size' value='XL')
+              label(for='size')  XL
+              br
+              input#vehicle3(type='checkbox' name='size' value='XXL')
+              label(for='size')  XXL
+              br
+              input#vehicle3(type='checkbox' name='size' value='XXXL')
+              label(for='size')  XXXL
+              br
+              input#vehicle3(type='checkbox' name='size' value='4XL')
+              label(for='size')  4XL
+              br
+            br
+          label(for="prodImg") Product Image*
+          input(type="file" name="prodImg" class="form-control" multiple)
+          br
+          input(type="submit" value="Submit" class="btn btn-success")

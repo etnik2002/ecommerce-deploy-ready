@@ -1,0 +1,242 @@
+doctype html
+head
+meta(charset='UTF-8')
+meta(http-equiv='X-UA-Compatible' content='IE=edge')
+meta(name='viewport' content='width=device-width, initial-scale=1.0')
+link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet')
+link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css')
+link(rel="stylesheet", href="/css/style.css")
+
+
+nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home(style="color:lime")
+              | Home
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe(style="color:lime")
+              | Profile
+
+
+#wrapper.d-flex
+  // Sidebar
+  #sidebar-wrapper.bg-white
+    .sidebar-heading.text-center.py-4.primary-text.fs-4.fw-bold.text-uppercase.border-bottom
+      i.fas.fa-user-secret.me-2(style="color:lime")
+      | Admin Panel
+    .list-group.list-group-flush.my-3
+      a.list-group-item.list-group-item-action.bg-transparent.second-text.active(href='#')
+        i.fas.fa-tachometer-alt.me-2(style="color:lime")
+        | Dashboard
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-project-diagram.me-2
+      //-   | Projects
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-chart-line.me-2
+      //-   | Analytics
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-paperclip.me-2
+      //-   | Reports
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-shopping-cart.me-2
+      //-   | Store Mng
+      a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold.active(href='/products')
+        i.fas.fa-gift.me-2(style="color:lime")
+        | Products
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-comment-dots.me-2
+      //-   | Chat
+      //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
+      //-   i.fas.fa-map-marker-alt.me-2
+      //-   | Outlet
+      a.list-group-item.list-group-item-action.bg-transparent.text-success.fw-bold(href='/users/logout')
+        i.fas.fa-power-off.me-2(style="color:lime")
+        | Logout
+  // /#sidebar-wrapper
+  // Page Content
+  #page-content-wrapper
+    nav.navbar.navbar-expand-lg.navbar-light.bg-transparent.py-4.px-4
+      .d-flex.align-items-center
+        i#menu-toggle.fas.fa-align-left.primary-text.fs-4.me-3
+        h2.fs-2.m-0 Dashboard
+      button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.ms-auto.mb-2.mb-lg-0
+          li.nav-item.dropdown
+            a#navbarDropdown.nav-link.dropdown-toggle.second-text.fw-bold(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')
+              i.fas.fa-user.me-2(style="color:lime")
+              | #{user.username}
+            ul.dropdown-menu(aria-labelledby='navbarDropdown')
+              li
+                a.dropdown-item(href='/users/profile') Profile
+
+              li
+                a.dropdown-item(href='/users/logout') Logout
+    .container-fluid.px-4
+      .row.g-3.my-2
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+                h3.fs-2 #{allProds}
+                p.fs-5 Total Products
+            i.fas.fa-gift.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{allOrders.length}
+              p.fs-5 Total Sales
+            i.fas.fa-hand-holding-usd.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{ordersThisWeek.length}
+              p.fs-5 Sales this week
+            i.fas.fa-calendar-alt.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{todayOrders.length}
+              p.fs-5 Sales today
+            i.fas.fa-calendar-check.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{unconfirmedOrders.length}
+              a(href="/orders/unconfirmed" style="text-decoration:none; list-style-type:none; color:black").fs-5 Unconfirmed Orders
+            i.fas.fa-hand-holding-usd.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{total.toFixed(2)}€
+              a( style="text-decoration:none; list-style-type:none; color:black").fs-5 Total income from orders
+            i.fas.fa-credit-card.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        //- .col-md-3
+        //-   .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+        //-     div
+        //-       h3.fs-2 3899
+        //-       p.fs-5 Delivery
+        //-     i.fas.fa-truck.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              if increase > 0
+                h3.fs-2(style="color:lime") #{increase.toFixed(2)}%
+                p.fs-5 Sales Increase last 24h  
+              if increase < 0
+                h3.fs-2(style="color:red") - #{increase.toFixed(2)}%
+                p.fs-5 Sales Increase last 24h
+            i.fas.fa-chart-bar.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+      .row.my-5
+        h3.fs-4.mb-3 Recent Orders
+        .col
+          table.table.bg-white.rounded.shadow-sm.table-hover
+            thead
+
+                tr
+                  th(scope='col' width='50') Order ID
+                  th(scope='col') Product ID
+                  th(scope='col') Customers Name
+                  th(scope='col') Customers Email
+                  th(scope='col') Customers Phone
+                  th(scope='col') Customers Address
+                  th(scope='col') Customers City
+                  th(scope='col') Total Price
+                  th(scope='col') Status
+                  th(scope='col') Manage
+
+            tbody
+              each order in allOrders
+                tr
+                  th(scope='row' class="badge bg-success" style="font-size:10px") #{order._id}
+                  td 
+                    a(href="/products/"+order.productID target="_blank") #{order.productID}
+                  
+                  td #{order.customerName}
+                  td 
+                    a(href="mailto:"+order.customerEmail) #{order.customerEmail}
+                  td #{order.customerPhone}
+                  td #{order.customerAddress}
+                  td #{order.customerCity}
+                  td #{order.productPrice.toFixed(2)} €
+                  //- #{order.productPrice * 61.5} den 
+                  if order.status == false
+                    td(style="color:red") Pending
+                  if order.status == true
+                    td(style="color:green") Confirmed
+                  td  
+                    if order.status == true
+                      form(action="/admin/unconfirm/"+order._id, method='post') 
+                        button(class="btn btn-danger" ) Cancel 
+                      i.fas.fa-exclamation-triangle
+                      
+                    if order.status == false
+                      form(action="/admin/"+order._id, method='post') 
+                        button(class="btn btn-success" type="submit" ) Confirm
+                      i.fa.fa-check(style="color:lime")
+
+                    //- #myModal.modal
+                    //-   // Modal content
+                    //-   .modal-content
+                    //-     span.close &times;
+                    //-     .container
+                    //-       h3 Are you sure you want to cancel this order?
+                    //-         br
+                    //-         br
+                    //-         form(action="/admin/unconfirm/"+order._id, method='post') 
+                    //-           button(class="btn btn-danger" type="submit") Cancel 
+                    //-         i.fas.fa-exclamation-triangle
+                    //-         br
+                    //-         br
+                    //-         a(href="/admin" class="btn btn-success") No
+                    //-         //- form(action="/admin/unconfirm/"+order._id, method='post') 
+                    //-         //-   button(class="btn btn-danger" ) Cancel 
+                    //-         //- i.fas.fa-exclamation-triangle
+                      
+                    //- if order.status == false
+                    //-   form(action="/admin/"+order._id, method='post') 
+                    //-     button(class="btn btn-warning" type="submit" ) Confirm
+                    //-   i.fa.fa-check(style="color:lime")
+
+
+// /#page-content-wrapper
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js')
+script.
+  var el = document.getElementById("wrapper");
+  var toggleButton = document.getElementById("menu-toggle");
+  toggleButton.onclick = function () {
+  el.classList.toggle("toggled");
+  };
+
+
+      //- var modal = document.getElementById("myModal");
+
+      //- // Get the button that opens the modal
+      //- var btn = document.getElementById("myBtn");
+
+      //- // Get the <span> element that closes the modal
+      //- var span = document.getElementsByClassName("close")[0];
+
+      //- // When the user clicks on the button, open the modal
+      //- btn.onclick = function() {
+      //-   modal.style.display = "block";
+      //- }
+
+      //- // When the user clicks on <span> (x), close the modal
+      //- span.onclick = function() {
+      //-   modal.style.display = "none";
+      //- }
+
+      //- // When the user clicks anywhere outside of the modal, close it
+      //- window.onclick = function(event) {
+      //-   if (event.target == modal) {
+      //-     modal.style.display = "none";
+      //-   }
+      //- }

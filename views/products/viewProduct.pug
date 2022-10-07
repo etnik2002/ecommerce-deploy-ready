@@ -1,0 +1,252 @@
+block content
+  head
+    link(rel="stylesheet", href="/css/style.css")
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js')
+    script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js')
+
+
+    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home
+              |           Home
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/products')
+              i.fa.fa-envelope-o
+                span.badge.bg-danger #{allProducts}
+              |           Buy
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe
+              | Profile
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+    
+
+  
+
+
+
+    each p in singleProduct 
+      .container.rounded.bg-white
+        .bg.row.d-flex.justify-content-center.pb-5
+          .col-sm-4.col-md-4.ml-1
+            .py-4.pl-6.d-flex.flex-row
+              h5
+                span.fa.fa-check-square-o
+                b #{p.prodName}
+                |  |
+              span.green Pay
+            .bg-white.p-2.d-flex.flex-column(style='border-radius:14px')
+              .text-center.mt-4
+                each image,i in p.prodImg
+                 .item.selfie.col-lg-3.col-md-4.col-6.col-sm
+                    a.fancylight.popup-btn(href='/images/products/'+p.prodImg[i], data-fancybox-group='light')
+                      img.img-fluid(src="/images/products/"+p.prodImg[i] alt=singleProduct.name,  )              
+                      //- h5 Mastering sability-Testing dan Design Feedback
+              
+              p ✨ Premium Class 
+              h4.green #{p.prodPrice}€
+              .rating.d-flex
+                .col-10
+                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  span.green (#{p.prodPrice / p.prodPrice * 120})
+                div
+                  img(src='https://st.depositphotos.com/1734074/3683/v/380/depositphotos_36834525-stock-illustration-vector-stack-of-money-icon.jpg?forcejpeg=true' alt='cash' style="width:50px")
+          .col-sm-5.col-md-6.mobile
+            .py-4.d-flex.justify-content-end
+              h6
+                a(href='/' class="badge bg-warning") Cancel and return to website
+            .bg-white.p-3.d-flex.flex-column(style='border-radius:14px')
+              form.pt-2(action="/cart/"+p._id, method="post")
+                h5 Product details
+                
+              //- .d-flex
+              //-   .col-8 Category :
+              //-   .ml-auto
+              //-     for category in prodCategory
+              //-       b #{category.catName}
+
+              if p.size.length > 0
+                .d-flex
+                  .col-8 Sizes :
+                  .ml-auto
+                    b #{p.size}
+              else 
+                .d-flex
+                  .col-8 Sizes :
+                  .ml-auto
+                    b All available sizes
+              //- .d-flex
+              //-   .col-8 Sertifikat kelas
+              //-   .ml-auto
+              //-     b Tersedia
+              .pt-2
+                h5 Product Description
+              .pl-2
+                div
+                  | #{p.prodDesc}
+
+              .pt-2
+                h5 Payment details
+              .d-flex
+                .col-8 Product Price:
+                .ml-auto.green #{parseFloat(p.prodPrice).toFixed(2)}€
+              .d-flex
+                .col-8
+                  span.green Discount
+                .ml-auto 5%
+
+              .d-flex
+                .col-8 Price devided from total
+                .ml-auto(style="color:red") -#{parseFloat(p.prodPrice * 5 / 100).toFixed(2)}€
+              .d-flex
+                .col-8 Total Price after discount
+                .ml-auto
+                  b #{parseFloat(p.prodPrice - (p.prodPrice * 5 / 100)).toFixed(2)}€
+
+              .pt-2
+                .border-top.px-4.mx-8.pt-2
+                h5 Money Transfer
+              .d-flex.flex-row
+                h5.pl-2
+                  span.fa.fa-check-square-o
+                  b ELIGIBLE
+                  |  |
+                span.green Cash
+              .pl-2
+                div Product ID :
+                .pb-2
+                  b #{p._id}
+
+              form(action="/cart/"+p._id, method="post") 
+                select(name="quantity" class="form-control" style="width: 50%" required)  
+                  option(value="") Choose quantity
+                      option(value="1") 1
+                      option(value="2") 2
+                      option(value="3") 3
+                      option(value="4") 4
+                      option(value="5") 5
+                      option(value="6") 6
+                      option(value="7") 7
+                      option(value="8") 8
+                      option(value="9") 9
+                      option(value="10") 10
+                      option(value="11") 11
+                .pt-2
+                  h5 Choose color
+                  select(name="color" class="form-control" style="width: 50%" required)  
+                    each color,i in p.prodColor
+                      option(value=color) #{color}
+                  h5 Choose size
+                  select(name="size" class="form-control" style="width: 50%" required)  
+                    each s,i in p.size
+                      option(value=s) #{s}
+                br
+                label(for="phone") Your Phone Number* 
+                input(type="number" name="phone" class="form-control" style="width: 50%" required)
+                br
+                label(for="address") Your Address* 
+                input(type="text" name="address" class="form-control" style="width: 50%" required)
+                br
+                label(for="city") City*
+                br
+                select(name="city" class="form-control" style="width: 50%" required)  
+                    option(value="" ) Zgjidh Qytetin
+                        option(value="Tetove") Tetovo
+                        option(value="Shkup")  Skopje
+                        option(value="Gostivar")  Gostivar
+                        option(value="Struga")  Struga
+                        option(value="Ohri" )  Ohrid
+                        option(value="Diber")  Debar
+                        option(value="Kërçova")  Kicevo
+                        option(value="Veles")  Veles
+                        option(value="Berova")  Berovo
+                        option(value="Dellçeva")  Delcevo
+                        option(value="Koçani")  Koçani
+                        option(value="Kamenica")  Kamenica
+                        option(value="Shtip")  Shtip
+                        option(value="Kratova")  Kratovo
+                        option(value="KrivaPallanka")  Kriva Pallanka
+                        option(value="Kumanova")  Kumanovo
+                        option(value="Manastiri")  Manastir
+                        option(value="DemirHisari")  Demir Hisar
+                        option(value="Krusheva")  Krushevo
+                        option(value="Prilep")  Prilep
+                        option(value="Resnja")  Resnja
+                        option(value="Gjevgjelia")  Gevgelija
+                        option(value="Strumica")  Strumica
+                        option(value="Vallandova")  Vallandovo
+                        option(value="DemirKapia")  Demir Kapia
+                        option(value="Negotina")  Negotino
+                        option(value="SvetiNikolla")  Sveti Nikolla
+                        option(value="Brodi")  Brodi
+                        option(value="Probishtipi")  Probishtip
+                br
+                //- button(type="submit" class="btn btn-success" placeholder="Your Address..."  style="width: 30%") Order now
+
+                input(type="text" name="price" value=p.prodPrice style="border:none; display:none").green 
+                input.btn.mt-4.btn-primary.btn-block(type='submit' value='Order Now' style='border-radius:100px; background-color:#2447f9; width:50%')
+              .text-center.p-3
+            .bg-white.mt-4.p-3.d-flex.flex-column(style='border-radius:14px')
+
+
+
+
+
+              //- .pt-2
+              //-   h5 Butuh bantuan? hubungi kami
+              //- .d-flex
+              //-   .col-8 Admin
+              //-   .ml-auto Gus
+              //- .d-flex
+              //-   .col-8 No. WhatsApp
+              //-   .ml-auto
+              //-     b +62815446747
+
+
+    script. 
+         $('.portfolio-menu ul li').click(function(){
+         	$('.portfolio-menu ul li').removeClass('active');
+         	$(this).addClass('active');
+         	
+         	var selector = $(this).attr('data-filter');
+         	$('.portfolio-item').isotope({
+         		filter:selector
+         	});
+         	return  false;
+         });
+         $(document).ready(function() {
+         var popup_btn = $('.popup-btn');
+         popup_btn.magnificPopup({
+         type : 'image',
+         gallery : {
+         	enabled : true
+         }
+         });
+         });
+
+
+            
+

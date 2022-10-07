@@ -1,0 +1,36 @@
+{
+  "name": "dropshipping",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "alert": "^5.1.1",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^4.6.0",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "firebase": "^9.11.0",
+    "local-storage": "^2.0.0",
+    "localstorage": "^1.0.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.7.8",
+    "notification": "^0.0.6",
+    "notification-component": "^0.0.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "pug": "^3.0.2",
+    "slugify": "^1.6.5",
+    "sweetalert2": "^11.4.37",
+    "twilio": "^3.82.2",
+    "web-push": "^3.5.0"
+  }
+}

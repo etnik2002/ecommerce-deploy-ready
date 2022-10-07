@@ -1,0 +1,75 @@
+block content
+  head
+    link(rel="stylesheet", href="/css/style.css")
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+
+   
+    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home
+              |           Home
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/products')
+              i.fa.fa-envelope-o
+                span.badge.bg-danger #{allProducts}
+              |           Buy
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe
+              | Profile
+          form.form-inline.my-2.my-lg-0
+            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+
+    h1(style="text-align:center") All products 
+    .container.products
+        each p in products 
+          table.table
+            thead
+              tr
+                th(scope='col') Product ID
+                th(scope='col') Name
+                th(scope='col') Price
+                th(scope='col') Image
+            tbody
+              tr
+                th(scope='row' class="badge bg-success") #{p._id}
+                td #{p.prodName}
+                td #{p.prodPrice} €
+                td 
+                  a(href="/products/"+p._id) 
+                    img(src="/images/products/"+p.prodImg[0],style="max-width:50px; max-height:50px" alt="#{p.prodName}")
+                td 
+                  form(action="/products/delete/"+p._id method="POST")
+                    button(type="submit" class="btn btn-danger" value="Delete Product") Delete Product
+
+                  //- button#myBtn(class="btn btn-danger") Delete Product
+                  //- // The Modal
+                  //- #myModal.modal
+                  //-   // Modal content
+                  //-   .modal-content
+                  //-     .container(style="width:50%")
+                  //-       span.close &times;
+                  //-       h3 Are you sure you want to delete this product
+                  //-       form(action="/products/delete/"+p._id method="POST")
+                  //-         button(type="submit" class="btn btn-danger" value="Delete Product") Yes
+                  //-         br
+                  //-         br
+                  //-         a(href="/products/allProducts" class="btn btn-success") No
+
+                td 
+                  a(href="/products/edit/"+p._id class="btn btn-primary") Edit Product
