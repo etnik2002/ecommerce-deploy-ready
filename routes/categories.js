@@ -3,6 +3,8 @@ const Product = require('../models/Categories');
 const {
   postCreateCategory,
   getAllCategories,
+  postEditCategory,
+  getEditCategory,
 } = require('../controllers/categories-controller');
 const { catUpload } = require('../middleware/multer');
 const Categories = require('../models/Categories');
@@ -17,5 +19,9 @@ router.get('/create', async (req, res) => {
 router.post('/create', catUpload.single('catImg'), isAdmin, postCreateCategory);
 
 router.get('/allCategories', isAdmin, getAllCategories);
+
+router.get('/update/:id', isAdmin, getEditCategory);
+
+router.post('/update/:id', postEditCategory);
 
 module.exports = router;

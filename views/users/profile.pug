@@ -62,7 +62,35 @@ html
                   li.breadcrumb-item 
                     a(href='/categories/create') Add a new Category
                   li.breadcrumb-item 
-                    a(href='/categories/allCategories') Manage Categories
+                    a(href='/categories/allCategories') Edit Categories
+
+    if user.userRole == 'ceo'
+      section(style='background-color: #eee;')
+        h1(style="text-align:center; display:flex; justify-content:center") Ceo Section
+
+        .container.py-5
+          .row
+            .col
+              nav.bg-light.rounded-3.p-3.mb-4(aria-label='breadcrumb')
+                ol.breadcrumb.mb-0
+                  li.breadcrumb-item
+                    a(href='/admin') Admin Panel
+                  li.breadcrumb-item 
+                    a(href='/products/ceo/all-products') Manage all products
+                  li.breadcrumb-item 
+                    a(href='/products/create') Add new products
+                  li.breadcrumb-item 
+                    a(href='#') Manage Users
+                  li.breadcrumb-item 
+                    a(href='/users/ceo-manage/admins') Manage Admins
+                  li.breadcrumb-item 
+                    a(href='/categories/create') Add a new Category
+                  li.breadcrumb-item 
+                    a(href='/categories/allCategories') Edit Categories
+
+
+
+    
     .row
       .col-lg-4
         .card.mb-3
@@ -129,14 +157,14 @@ html
                     tr
                       th(scope='col') Product ID
                       th(scope='col') Name
-                      th(scope='col') Price
+                      th(scope='col') Original Price
                       th(scope='col') Image
                       //- th(scope='col') Status
                   tbody
                     tr
                       th(scope='row' class="badge bg-success") #{order._id}
                       td #{order.prodName}
-                      td #{order.prodPrice} €
+                      td #{order.prodPrice} den
                       td 
                         a(href="/products/"+order._id) 
                           img(src="/images/products/"+order.prodImg[0],style="max-width:50px; max-height:50px" alt="#{order.prodName}")
@@ -159,6 +187,30 @@ html
             .col-sm-9
               p.text-muted.mb-0   
             hr
+
+  //- .container
+  //-   each order in user.liked
+  //-     table.table
+  //-       thead
+  //-         tr
+  //-           th(scope='col') Product ID
+  //-           th(scope='col') Name
+  //-           th(scope='col') Original Price
+  //-           th(scope='col') Image
+  //-           //- th(scope='col') Status
+  //-       tbody
+  //-         tr
+  //-           th(scope='row' class="badge bg-success") #{order._id}
+  //-           td #{order.prodName.split(' ').slice(0, 2).join(' ')}...
+  //-           td #{order.prodPrice} den
+  //-           td 
+  //-             a(href="/products/"+order._id) 
+  //-               img(src="/images/products/"+order.prodImg[0],style="max-width:50px; max-height:50px" alt=order.prodName)
+  //-           //- td 
+  //-           //-   p(style="color:green") Confirmed
+  //-           td 
+  //-             button(class="btn btn-primary" ) 
+  //-               a(href="/products/"+order._id style="color:white") View Product 
 
 
     script.

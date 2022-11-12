@@ -34,6 +34,13 @@ const orderSchema = mongoose.Schema(
     productPrice: {
       type: Number,
     },
+
+    discount: {
+      type: Number,
+    },
+    quantity: {
+      type: Number,
+    },
     status: {
       type: Boolean,
       default: false,

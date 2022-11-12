@@ -30,9 +30,13 @@ block content
             a.nav-link(href='/users/profile')
               i.fa.fa-globe
               | Profile
-          form.form-inline.my-2.my-lg-0
-            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+
+          .dropdown
+            button.dropbtn Categories
+            .dropdown-content
+              each category in categories
+                a(href="/"+category._id) #{category.catName}
 
 
     h1(style="text-align:center") Choosen category : #{catId.catName}  
@@ -43,17 +47,24 @@ block content
                 each p in prodCat 
                     .card(id="card" style="padding:20px")
                         a(href="/products/"+p._id) 
-                          h3.card-title #{p.prodName}
+                          h4.card-title #{p.prodName}
+                          if p.discount
+                            h2(class="badge bg-danger" style="font-size:20px; float:left") #{p.discount} %
                           img.card-img-top(src="/images/products/"+p.prodImg[0], alt=p.prodName style="height:250px")
                           .card-body
                             p.card-text(style="font-size:18px")
-                              | Description : #{p.prodDesc}
-                            p.card-text(style="font-size:18px")
-                              | Price : #{p.prodPrice}€
+                              //- | Description : #{p.prodDesc}
+
+                            //- p.card-text(style="font-size:18px")
+                            //-   | Price : #{p.prodPrice}den
                             //- p.card-text
                             //-   | Category : #{p.prodCategory}
-                          .card-body
-                          
+                            .card-body(style="font-size:16px")
+                              if p.sold > 0
+                                p.card-text
+                                  | Sold : #{p.sold} 
+                              else  
+                                  | Sold : 0                             
                             a.card-link(href="/products/"+p._id class="btn btn-success") View Product 
             else 
                 .container.products 

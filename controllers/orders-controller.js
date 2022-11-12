@@ -13,4 +13,16 @@ module.exports = {
     const unconfirmedOrders = await Order.find({ status: false });
     console.log({ unconfirmedOrders: unconfirmedOrders.length });
   },
+
+  postDeleteOrder: async (req, res) => {
+    try {
+      const order = await Order.findById(req.params.id);
+      const deletedOrder = await Order.deleteOne(order);
+      console.log(deletedOrder);
+      res.redirect('/admin?order-deleted=true');
+    } catch (error) {
+      console.log(error);
+      res.redirect('/admin?order-deleted=false');
+    }
+  },
 };

@@ -1,0 +1,113 @@
+block content
+  head
+    link(rel="stylesheet", href="/css/style.css")
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+
+    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home
+              |           Home
+              span.sr-only (current)
+          li.nav-item
+            a.nav-link(href='/products')
+              i.fa.fa-envelope-o
+                span.badge.bg-danger #{allProducts}
+              |           Buy
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe
+              | Profile
+      //- form.form-inline.my-2.my-lg-0(action="/products/search" method="GET")
+      //-   input.form-control.mr-sm-2(type='text' action="/products/"+search placeholder='Search' aria-label='Search')
+      //-   button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+    .container 
+      h2(style="text-align:center" class="alert alert-success" id="alert") Products in discount
+        span.close(style="color:green") X
+   
+    .container.products 
+      if productsWithDiscount.length > 0
+        each p in productsWithDiscount 
+          .card(id="card" style="padding:20px")
+            a(href="/products/"+p._id) 
+              h3.card-title= p.prodName
+              if p.discount
+                h2(class="badge bg-danger" style="font-size:20px; float:left") #{p.discount} %
+              img.card-img-top(src="/images/products/"+p.prodImg[0], alt=p.prodName style="height:300px")
+              .card-body
+                //- p.card-text
+                //-   | Description : #{p.prodDesc}
+                //- p.card-text
+                //-   | Category : #{p.prodCategory}
+              .card-body
+              
+                a.card-link(href="/products/"+p._id class="btn btn-success") View Product 
+                //- form(action="/cart/add/"+p_id)
+                //-   button( type="submit" class="btn btn-primary") Add to Cart 
+                
+          br
+          br
+          br
+      else 
+        h1 No products available
+        if user.userRole == 'admin'
+          a(href="/products/create")  Click here to add a product!
+
+    //- .pagination-wrapper 
+    //-   ul.pagination-bottom 
+    //-     if current > 1
+    //-       li 
+    //-         a(href=`?page=${parseInt(current) - 1}`) 
+    //-     - var i = 1
+    //-     while i <= pages
+    //-       li  
+    //-         a(href=`?page=${i}`)= i++ 
+    //-     if current < pages
+    //-       li 
+    //-         a(href=`?page=${parseInt(current) + 1}`) 
+
+    .container.paginator
+      nav(aria-label='Page navigation example')
+        ul.pagination
+          if current > 1
+            li.page-item
+              a(href=`?page=${parseInt(current) - 1}`) Prev
+          - var i = 1
+          while i <= pages
+            li.page-item  
+              a(href=`?page=${i}`)= i++ 
+          if current < pages
+            li.page-item 
+              a(href=`?page=${parseInt(current) + 1}`) Next
+
+
+    script.
+      var alert = document.getElementById("alert");
+
+ 
+
+      var span = document.getElementsByClassName("close")[0];
+
+      
+      span.onclick = function() {
+        alert.style.display = "none";
+        span.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == alert) {
+          alert.style.display = "none";
+        }
+      }

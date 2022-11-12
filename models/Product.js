@@ -15,6 +15,9 @@ const ProductSchema = mongoose.Schema(
       type: Number,
       required: true,
     },
+    discount: {
+      type: Number,
+    },
     prodCategory: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
@@ -34,9 +37,19 @@ const ProductSchema = mongoose.Schema(
     prodColor: {
       type: [String],
     },
+    inStock: {
+      type: Number,
+      required: true,
+    },
+    usersLikedThis: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'User', unique: true },
+    ],
+    sold: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
 
-ProductSchema.index({ name: 'text' });
+ProductSchema.index({ prodName: 'text' });
 module.exports = mongoose.model('Product', ProductSchema);

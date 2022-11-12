@@ -18,6 +18,10 @@ const categorySchema = Schema(
       unique: true,
       lowercase: true,
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
     catImg: {
       type: String,
     },

@@ -7,6 +7,7 @@ block content
     link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
 
     nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
       a.navbar-brand(href='/') ED-Store
@@ -21,7 +22,7 @@ block content
               span.sr-only (current)
           li.nav-item
             a.nav-link(href='/products')
-              i.fa.fa-envelope-o
+              i.fa.fa-gift
                 span.badge.bg-danger #{allProducts}
               |           Buy
 
@@ -29,29 +30,72 @@ block content
             a.nav-link(href='/users/profile')
               i.fa.fa-globe
               | Profile
-          form.form-inline.my-2.my-lg-0
-            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+            //- form.form-inline.my-2.my-lg-0(action="/products/search" method="GET")
+            //-   input.form-control.mr-sm-2(type='text' action="/products/"+search placeholder='Search' aria-label='Search')
+            //-   button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+          .dropdown
+            button.dropbtn Categories
+            .dropdown-content
+              each category in categories
+                a(href="/"+category._id) #{category.catName}
 
-   
+ 
+  
+  .container
+    span.close(style="color:red; left:250px") X
+    a(href="/discounts" target="_blank")
+      //- h1 View products that are in discount
+      img(src="/banners/mega-sale.png", alt="" id="banner" style="max-width:600px;width:100%; border-radius:20px; display:flex; margin:0 auto")
+    br
+    br
+
+    .container(style="position:relative; left:2%") 
+      .dropdown
+        button.dropbtn Choose by Category
+        .dropdown-content
+          each category in categories
+            a(href="/"+category._id) #{category.catName}
+
+    //- form.form-inline.my-2.my-lg-0(action="/products/search" method="GET")
+    //-   input.form-control.mr-sm-2(type="text", name="search" placeholder="Search for products..." action="/products/"+search)
+    //-   button.btn.btn-outline-success.my-2.my-sm-0(type="submit") Search
+
+    br
+
+    br
+
+    
     .container.products 
       if products.length > 0
         each p in products 
           .card(id="card" style="padding:20px")
             a(href="/products/"+p._id) 
-              h3.card-title= p.prodName
+              h4.card-title= p.prodName
+              if p.discount
+                h2(class="badge bg-danger" style="font-size:20px; float:left") -#{p.discount} %
               img.card-img-top(src="/images/products/"+p.prodImg[0], alt=p.prodName style="height:300px")
               .card-body
+              if p.sold > 0
                 p.card-text
-                  | Description : #{p.prodDesc}
-                //- p.card-text
-                //-   | Category : #{p.prodCategory}
-              .card-body
+                  | Sold : #{p.sold} 
+              else  
+                  | Sold : 0 
               
+              .card-body
                 a.card-link(href="/products/"+p._id class="btn btn-success") View Product 
-                //- form(action="/cart/add/"+p_id)
-                //-   button( type="submit" class="btn btn-primary") Add to Cart 
+              
+              
+            //- hr
+            //- each id in p.usersLikedThis
+            //-   if user._id == p._id  
+            //-     h1 Liked
+            //-   else 
                 
+            //-     form(action="/products/like/"+p._id, method="POST") 
+            //-       button(type="submit" id="like") 
+            //-         i.fa.fa-thumbs-o-up(id="like-btn" style='font-size:24px; position:relative;  color:blue') Like
+            //-         span(style="position:relative; left:80%; ") #{p.usersLikedThis.length} likes
+
           br
           br
           br
@@ -61,4 +105,47 @@ block content
           a(href="/products/create")  Click here to add a product!
 
 
-          
+    //- .pagination-wrapper 
+    //-   ul.pagination-bottom 
+    //-     if current > 1
+    //-       li 
+    //-         a(href=`?page=${parseInt(current) - 1}`) 
+    //-     - var i = 1
+    //-     while i <= pages
+    //-       li  
+    //-         a(href=`?page=${i}`)= i++ 
+    //-     if current < pages
+    //-       li 
+    //-         a(href=`?page=${parseInt(current) + 1}`) 
+
+    .container.paginator
+      nav(aria-label='Page navigation example')
+        ul.pagination
+          if current > 1
+            li.page-item
+              a(href=`?page=${parseInt(current) - 1}`) Prev
+          - var i = 1
+          while i <= pages
+            li.page-item  
+              a(href=`?page=${i}`)= i++ 
+          if current < pages
+            li.page-item 
+              a(href=`?page=${parseInt(current) + 1}`) Next
+
+
+    script.
+      var banner = document.getElementById("banner");
+
+      var span = document.getElementsByClassName("close")[0];
+
+      
+      span.onclick = function() {
+        banner.style.display = "none";
+        span.style.display = "none";
+      }
+
+      window.onclick = function(event) {
+        if (event.target == banner) {
+          banner.style.display = "none";
+        }
+      }

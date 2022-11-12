@@ -4,6 +4,7 @@ meta(charset='UTF-8')
 meta(http-equiv='X-UA-Compatible' content='IE=edge')
 meta(name='viewport' content='width=device-width, initial-scale=1.0')
 link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js')
 link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css')
 link(rel="stylesheet", href="/css/style.css")
 
@@ -25,6 +26,10 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
               | Profile
 
 
+//- canvas#myChart(style='width:100%;max-width:700px')
+
+
+
 #wrapper.d-flex
   // Sidebar
   #sidebar-wrapper.bg-white
@@ -32,7 +37,7 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
       i.fas.fa-user-secret.me-2(style="color:lime")
       | Admin Panel
     .list-group.list-group-flush.my-3
-      a.list-group-item.list-group-item-action.bg-transparent.second-text.active(href='#')
+      a.list-group-item.list-group-item-action.bg-transparent.second-text.active(href='#' )
         i.fas.fa-tachometer-alt.me-2(style="color:lime")
         | Dashboard
       //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
@@ -47,9 +52,12 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
       //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
       //-   i.fas.fa-shopping-cart.me-2
       //-   | Store Mng
-      a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold.active(href='/products')
+      a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold.active(href='/products' target="_blank")
         i.fas.fa-gift.me-2(style="color:lime")
         | Products
+      a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold.active(href='/products/create' target="_blank")
+        i.fas.fa-gift.me-2(style="color:lime")
+        | Add new Products
       //- a.list-group-item.list-group-item-action.bg-transparent.second-text.fw-bold(href='#')
       //-   i.fas.fa-comment-dots.me-2
       //-   | Chat
@@ -86,7 +94,9 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
             div
                 h3.fs-2 #{allProds}
-                p.fs-5 Total Products
+                p
+                  a(href="/products/allProducts" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5  Total products
+                //- p.fs-5 Total Products
             i.fas.fa-gift.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         .col-md-3
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
@@ -106,16 +116,31 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
               h3.fs-2 #{todayOrders.length}
               p.fs-5 Sales today
             i.fas.fa-calendar-check.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        
         .col-md-3
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
             div
-              h3.fs-2 #{unconfirmedOrders.length}
-              a(href="/orders/unconfirmed" style="text-decoration:none; list-style-type:none; color:black").fs-5 Unconfirmed Orders
+              h3.fs-2 #{admins.length}
+              //- a(href="/users/allAdmins" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 View all admin accounts
+              p(href="/users/allAdmins" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 View all admin accounts
+            i.fas.fa-regular.fa-star.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{confirmedOrders.length}
+              a(href="/orders/confirmed" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 Total confirmed Orders
             i.fas.fa-hand-holding-usd.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         .col-md-3
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
             div
-              h3.fs-2 #{total.toFixed(2)}€
+              h3.fs-2 #{unconfirmedOrders.length}
+              a(href="/orders/unconfirmed" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 Unconfirmed Orders
+            i.fas.fa-hand-holding-usd.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+
+        .col-md-3
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+            div
+              h3.fs-2 #{(totalPrice).toFixed(2)}den
               a( style="text-decoration:none; list-style-type:none; color:black").fs-5 Total income from orders
             i.fas.fa-credit-card.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         //- .col-md-3
@@ -125,7 +150,7 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
         //-       p.fs-5 Delivery
         //-     i.fas.fa-truck.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         .col-md-3
-          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
+          .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded    
             div
               if increase > 0
                 h3.fs-2(style="color:lime") #{increase.toFixed(2)}%
@@ -134,8 +159,15 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                 h3.fs-2(style="color:red") - #{increase.toFixed(2)}%
                 p.fs-5 Sales Increase last 24h
             i.fas.fa-chart-bar.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
+        if message.length > 0
+          h1(class="alert alert-danger") #{message}
       .row.my-5
-        h3.fs-4.mb-3 Recent Orders
+
+
+        h3.fs-4.mb-3 Last 10 orders
+        
+        a(href="/orders/allOrders" style="font-size:18px; width:30%; display:flex; margin: 0 auto; text-align:center;" class="btn btn-success") View all Orders
+
         .col
           table.table.bg-white.rounded.shadow-sm.table-hover
             thead
@@ -157,7 +189,7 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                 tr
                   th(scope='row' class="badge bg-success" style="font-size:10px") #{order._id}
                   td 
-                    a(href="/products/"+order.productID target="_blank") #{order.productID}
+                    a(href="/products/"+order.productID target="_blank" ) #{order.productID}
                   
                   td #{order.customerName}
                   td 
@@ -165,7 +197,11 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                   td #{order.customerPhone}
                   td #{order.customerAddress}
                   td #{order.customerCity}
-                  td #{order.productPrice.toFixed(2)} €
+                  if order.discount
+                    td #{parseFloat(order.productPrice * order.quantity - ( order.productPrice * order.quantity * order.discount / 100)).toFixed(2) } den 
+        
+                  else 
+                    td #{parseFloat(order.productPrice)} den
                   //- #{order.productPrice * 61.5} den 
                   if order.status == false
                     td(style="color:red") Pending
@@ -179,8 +215,12 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                       
                     if order.status == false
                       form(action="/admin/"+order._id, method='post') 
-                        button(class="btn btn-success" type="submit" ) Confirm
+                        input(type="number" placeholder="ETA" name="eta" class="form-control")
+                        br
+                        button(class="btn btn-success" type="submit") Confirm
                       i.fa.fa-check(style="color:lime")
+                      form(action="/orders/delete/"+order._id, method='post') 
+                        button(class="btn btn-danger" type="submit") Cancel
 
                     //- #myModal.modal
                     //-   // Modal content
@@ -206,6 +246,9 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                     //-   i.fa.fa-check(style="color:lime")
 
 
+
+
+
 // /#page-content-wrapper
 script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js')
 script.
@@ -215,6 +258,31 @@ script.
   el.classList.toggle("toggled");
   };
 
+
+
+  var xValues = ["2022", "2023"];
+  var yValues = [55, 1];
+  var barColors = ["red", "green","blue","orange","brown"];
+  new Chart("myChart", {
+  type: "bar",
+  data: {
+  labels: xValues,
+  datasets: [{
+  backgroundColor: barColors,
+  data: yValues
+  }]
+  },
+  options: {
+  legend: {display: false},
+  title: {
+  display: true,
+  text: "Order data"
+  }
+  }
+  });
+
+
+ 
 
       //- var modal = document.getElementById("myModal");
 

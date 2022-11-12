@@ -12,6 +12,7 @@ block content
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
 
 
     nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
@@ -27,7 +28,7 @@ block content
               span.sr-only (current)
           li.nav-item
             a.nav-link(href='/products')
-              i.fa.fa-envelope-o
+              i.fa.fa-gift
                 span.badge.bg-danger #{allProducts}
               |           Buy
 
@@ -35,9 +36,16 @@ block content
             a.nav-link(href='/users/profile')
               i.fa.fa-globe
               | Profile
-          form.form-inline.my-2.my-lg-0
-            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+          .dropdown
+            button.dropbtn Categories
+            .dropdown-content
+              each category in categories
+                a(href="/"+category._id) #{category.catName}
+
+          //- form.form-inline.my-2.my-lg-0
+          //-   input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+          //-   button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
     
 
   
@@ -45,6 +53,9 @@ block content
 
 
     each p in singleProduct 
+      if p.inStock < 1
+        .container
+          h3(class="alert alert-danger" style="text-align:center") Out of stock, Delivery might take longer!
       .container.rounded.bg-white
         .bg.row.d-flex.justify-content-center.pb-5
           .col-sm-4.col-md-4.ml-1
@@ -54,24 +65,29 @@ block content
                 b #{p.prodName}
                 |  |
               span.green Pay
-            .bg-white.p-2.d-flex.flex-column(style='border-radius:14px')
-              .text-center.mt-4
+            .bg-white.p-2.d-flex.flex-column(id="bgWhite" style='')
+              .text-center.mt-4(style="  ")
                 each image,i in p.prodImg
-                 .item.selfie.col-lg-3.col-md-4.col-6.col-sm
+                 .item.selfie.col-lg-3.col-md-4.col-6.col-sm(style="")
                     a.fancylight.popup-btn(href='/images/products/'+p.prodImg[i], data-fancybox-group='light')
-                      img.img-fluid(src="/images/products/"+p.prodImg[i] alt=singleProduct.name,  )              
+                      img.img-fluid(src="/images/products/"+p.prodImg[i] alt=singleProduct.name)              
                       //- h5 Mastering sability-Testing dan Design Feedback
-              
+   
+
               p ✨ Premium Class 
-              h4.green #{p.prodPrice}€
+              h4.green #{parseFloat(p.prodPrice - (p.prodPrice * p.discount / 100)).toFixed(0)} den
               .rating.d-flex
                 .col-10
-                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
-                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
-                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
-                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
-                  img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
-                  span.green (#{p.prodPrice / p.prodPrice * 120})
+                  //- img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  //- img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  //- img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  //- img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  //- img(src='https://akproject.tech/assets/img/icons/ic-star.svg' alt='')
+                  span.green Tax (#{p.prodPrice * 7 / 100}) den 
+                  b(style="color:red")    (Free for now)
+                  br
+
+
                 div
                   img(src='https://st.depositphotos.com/1734074/3683/v/380/depositphotos_36834525-stock-illustration-vector-stack-of-money-icon.jpg?forcejpeg=true' alt='cash' style="width:50px")
           .col-sm-5.col-md-6.mobile
@@ -81,18 +97,17 @@ block content
             .bg-white.p-3.d-flex.flex-column(style='border-radius:14px')
               form.pt-2(action="/cart/"+p._id, method="post")
                 h5 Product details
-                
-              //- .d-flex
-              //-   .col-8 Category :
-              //-   .ml-auto
-              //-     for category in prodCategory
-              //-       b #{category.catName}
-
+              if p.sold > 0
+                b #{p.sold} Sold
+                hr
+              else 
+                b 0 Sold
+                hr
               if p.size.length > 0
                 .d-flex
                   .col-8 Sizes :
-                  .ml-auto
-                    b #{p.size}
+                    .ml-auto
+                      b #{p.size}
               else 
                 .d-flex
                   .col-8 Sizes :
@@ -103,28 +118,41 @@ block content
               //-   .ml-auto
               //-     b Tersedia
               .pt-2
-                h5 Product Description
+                h5(style="color:coral") Product Description
               .pl-2
-                div
+                div(style="border-bottom: 1px solid coral")
                   | #{p.prodDesc}
 
               .pt-2
                 h5 Payment details
               .d-flex
                 .col-8 Product Price:
-                .ml-auto.green #{parseFloat(p.prodPrice).toFixed(2)}€
+                .ml-auto.green #{parseFloat(p.prodPrice).toFixed(0)} den
               .d-flex
                 .col-8
                   span.green Discount
-                .ml-auto 5%
+                if p.discount
+                  .ml-auto #{p.discount}%
+                else 
+                  .ml-auto 0%
 
               .d-flex
                 .col-8 Price devided from total
-                .ml-auto(style="color:red") -#{parseFloat(p.prodPrice * 5 / 100).toFixed(2)}€
+                if p.discount
+                  .ml-auto(style="color:red") -#{parseFloat(p.prodPrice * p.discount / 100) } den
+                else
+                  .ml-auto(style="color:red") 0 den
               .d-flex
+                .col-8(style="text-decoration:line-through; color:red") Tax
+                .ml-auto Free
+              .d-flex 
                 .col-8 Total Price after discount
                 .ml-auto
-                  b #{parseFloat(p.prodPrice - (p.prodPrice * 5 / 100)).toFixed(2)}€
+                  if p.discount
+                    b(name="totalPrice") #{parseFloat(p.prodPrice - (p.prodPrice * p.discount / 100)).toFixed(0)} den
+
+                  else 
+                    b #{parseFloat(p.prodPrice).toFixed(0)} den
 
               .pt-2
                 .border-top.px-4.mx-8.pt-2
@@ -140,29 +168,36 @@ block content
                 .pb-2
                   b #{p._id}
 
+
+
               form(action="/cart/"+p._id, method="post") 
-                select(name="quantity" class="form-control" style="width: 50%" required)  
-                  option(value="") Choose quantity
-                      option(value="1") 1
-                      option(value="2") 2
-                      option(value="3") 3
-                      option(value="4") 4
-                      option(value="5") 5
-                      option(value="6") 6
-                      option(value="7") 7
-                      option(value="8") 8
-                      option(value="9") 9
-                      option(value="10") 10
-                      option(value="11") 11
-                .pt-2
-                  h5 Choose color
-                  select(name="color" class="form-control" style="width: 50%" required)  
-                    each color,i in p.prodColor
-                      option(value=color) #{color}
+                if p.inStock < 1
+                  label(for="quantity") Choose quantity 
+                  br
+                  input(type="number" name="quantity" class="form-control" placeholder="Quantity..." style="width: 50%" required) 
+                else
+                  select(name="quantity" class="form-control" style="width: 50%" required)  
+                      option(value="")  Choose quantity
+                        //- each number,i in p.inStock
+
+                      - for (let i = 1; i < p.inStock+1; i++) {
+                          option(value=p.inStock[i]) #{i}
+                      - }
+
+                     
+                if p.prodColor.length > 0
+                  .pt-2
+                    h5 Choose color if available
+                    select(name="color" class="form-control" style="width: 50%" required)  
+                      each color,i in p.prodColor
+                        option(value=color) #{color}
+               
+                if p.size.length > 0
                   h5 Choose size
-                  select(name="size" class="form-control" style="width: 50%" required)  
-                    each s,i in p.size
-                      option(value=s) #{s}
+                  select(name="color" class="form-control" style="width: 50%" )  
+                    if p.size
+                      each size,i in p.size
+                        option(value=size) #{size}
                 br
                 label(for="phone") Your Phone Number* 
                 input(type="number" name="phone" class="form-control" style="width: 50%" required)
@@ -173,7 +208,7 @@ block content
                 label(for="city") City*
                 br
                 select(name="city" class="form-control" style="width: 50%" required)  
-                    option(value="" ) Zgjidh Qytetin
+                    option(value="" ) Your City
                         option(value="Tetove") Tetovo
                         option(value="Shkup")  Skopje
                         option(value="Gostivar")  Gostivar
@@ -204,26 +239,69 @@ block content
                         option(value="Brodi")  Brodi
                         option(value="Probishtipi")  Probishtip
                 br
+                
                 //- button(type="submit" class="btn btn-success" placeholder="Your Address..."  style="width: 30%") Order now
 
                 input(type="text" name="price" value=p.prodPrice style="border:none; display:none").green 
+                input(type="number" name="discount" value=p.discount style="display:none")
+
                 input.btn.mt-4.btn-primary.btn-block(type='submit' value='Order Now' style='border-radius:100px; background-color:#2447f9; width:50%')
               .text-center.p-3
-            .bg-white.mt-4.p-3.d-flex.flex-column(style='border-radius:14px')
 
 
-
-
-
-              //- .pt-2
-              //-   h5 Butuh bantuan? hubungi kami
-              //- .d-flex
-              //-   .col-8 Admin
-              //-   .ml-auto Gus
-              //- .d-flex
-              //-   .col-8 No. WhatsApp
-              //-   .ml-auto
-              //-     b +62815446747
+          .container-fluid
+            .row
+              .col-md-4
+                img.bsp_big-image(src='/banners/recommended.webp' style='    width: 100%;\
+                height: 347px;')
+              .col-md-8
+                .row.bsp_row-underline
+                  .col-md-6
+                    span.pull-left.bsp_deal-text Recommended products
+                  .col-md-6
+                    a(href='/products')
+                      span.pull-right.bsp_view-all
+                        | View all 
+                        i.fa.fa-arrow-right
+                .row
+                  each product in recommendedProducts
+                    .col-md-3.bsp_padding-0
+                      .bsp_bbb_item 
+                        a(href="/products/"+product._id) 
+                          img.bsp_image(src="/images/products/"+product.prodImg[0])
+                        a(href="/products/"+product._id) 
+                          h5.bsp_card-title #{product.prodName}
+                        .text-center
+                          p.bsp_card-text #{product.prodPrice} den
+                          h6 Category : #{product.prodCategory.catName}
+                  
+          .container-fluid
+            .row
+              .col-md-4
+                img.bsp_big-image(src='/banners/limited-offer.jpg' style='    width: 100%;\
+                height: 347px;')
+              .col-md-8
+                .row.bsp_row-underline
+                  .col-md-6
+                    span.pull-left.bsp_deal-text Big discount
+                  .col-md-6
+                    a(href='/discounts')
+                      span.pull-right.bsp_view-all
+                        | View all 
+                        i.fa.fa-arrow-right
+                .row
+                  each product in inDiscount
+                    .col-md-3.bsp_padding-0
+                      .bsp_bbb_item 
+                        a(href="/products/"+product._id) 
+                          img.bsp_image(src="/images/products/"+product.prodImg[0])
+                        a(href="/products/"+product._id) 
+                          h5.bsp_card-title #{product.prodName}
+                        .text-center
+                          p.bsp_card-text(style="text-decoration: line-through;") #{product.prodPrice.toFixed(0)} den
+                          if product.discount
+                            p.bsp_card-text(style="color:green") #{parseFloat(product.prodPrice - (product.prodPrice * product.discount / 100)).toFixed(0)} den
+                          h6 Category : #{product.prodCategory.catName}
 
 
     script. 

@@ -1,6 +1,7 @@
 const router = require('express').Router();
-const { kerkohetIdentifikimi, isAdmin } = require('../middleware/auth');
+const { kerkohetIdentifikimi, isAdmin, isCeo } = require('../middleware/auth');
 const { productUpload } = require('../middleware/multer');
+const Product = require('../models/Product');
 
 const {
   getProducts,
@@ -14,12 +15,17 @@ const {
   postEditProduct,
   postDeleteProduct,
   getProductsAdmin,
+  searchedProducts,
+  postLikeProduct,
 } = require('../controllers/product-controller');
-const Product = require('../models/Product');
+
+router.get('/search', searchedProducts);
 
 router.get('/', getProducts);
 
 router.get('/allProducts', isAdmin, getProductsAdmin);
+
+router.get('/ceo/all-products', isCeo, getProductsAdmin);
 
 router.get('/create', getCreateProduct);
 
@@ -36,5 +42,7 @@ router.get('/edit/:id', getEditProduct);
 router.post('/edit/:id', postEditProduct);
 
 router.post('/delete/:id', postDeleteProduct);
+
+router.post('/like/:id', postLikeProduct);
 
 module.exports = router;

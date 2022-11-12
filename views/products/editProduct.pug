@@ -47,6 +47,12 @@ block content
                     label(for="prodPrice") Product Price*
                     input(type="number" name="prodPrice" value=product.prodPrice required class="form-control")
                 br
+                label(for='size' style="font-size:16px")  Discount*
+                input#vehicle1(type='number' name='discount' placeholder="Optional" class="form-control")
+                br
+                label(for='inStock' style="font-size:16px")  inStock*
+                input#vehicle1(type='number' name='inStock' placeholder="inStock" class="form-control")
+                br
                 .form-elem(style="font-size:16px")
                     label(for="isFeatured") Is Featured ? 
                     select(name="isFeatured" class="form-control" style="width:30%")

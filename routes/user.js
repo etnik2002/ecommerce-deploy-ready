@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const passport = require('passport');
-const { kerkohetIdentifikimi, isAdmin } = require('../middleware/auth');
+const { kerkohetIdentifikimi, isAdmin, isCeo } = require('../middleware/auth');
 const flash = require('connect-flash');
+const User = require('../models/User');
 
 const {
   getUsers,
@@ -13,6 +14,8 @@ const {
   getOrderedProduct,
   postUpdateUser,
   postDeleteUser,
+  ceoManageAdmins,
+  changeAdminRole,
 } = require('../controllers/user-controller');
 
 router.get('/', getUsers);
@@ -50,5 +53,14 @@ router.get('/update/:id', getUpdateUSer);
 router.post('/update/:id', postUpdateUser);
 
 router.post('/delete/:id', postDeleteUser);
+
+router.get('/allAdmins', async (req, res) => {
+  const admins = await User.find({ userRole: 'admin' });
+  res.render('users/allAdmins', { admins });
+});
+
+router.get('/ceo-manage/admins', ceoManageAdmins);
+
+router.post('/ceo/change-user-role/:id', isCeo, changeAdminRole);
 
 module.exports = router;

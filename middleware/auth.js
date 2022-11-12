@@ -11,11 +11,20 @@ module.exports = {
       return next();
     }
   },
+
   isAdmin: (req, res, next) => {
     if (req.isAuthenticated() && req.user.userRole === 'admin') {
       return next();
     } else {
       res.redirect('/?nukJeAdmin');
+    }
+  },
+
+  isCeo: (req, res, next) => {
+    if (req.isAuthenticated() && req.user.userRole === 'ceo') {
+      return next();
+    } else {
+      res.redirect('/?nukJeShef');
     }
   },
 };

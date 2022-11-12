@@ -60,9 +60,11 @@ html
                           input#form3Example4c.form-control(type='password' name="password")
                           label.form-label(for='password' ) Password
                           br
-                          each msg,i in message 
+                          if message.length > 0
+                            h1(class="alert alert-danger") #{message}
+                          //- each msg,i in message 
+                          //-   h(id="wrong")= msg[i]
 
-                            h(id="wrong")= msg[i]
                       .form-check.d-flex.justify-content-center.mb-5
                         input#form2Example3c.form-check-input.me-2(type='checkbox' value='')
                         label.form-check-label(for='form2Example3')

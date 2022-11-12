@@ -47,23 +47,52 @@ block content
           label(for="prodPrice") Product Price*
           input(type="number" name="prodPrice" placeholder="Product price" class="form-control" required)
           br
+          
+          label(for='size')  Discount*
+          input#vehicle1(type='number' name='discount' placeholder="Optional" class="form-control")
+          br
+          label(for='inStock')  In Stock*
+          input#vehicle1(type='number' name='inStock' placeholder="In Stock" required class="form-control")
+          br
+          label(for="prodCategory") Choose Category*
+          select(name="prodCategory" class="form-control" required)  
+              option(value="") Choose Category
+              each e in categories 
+                  option(value=e._id)= e.catName
+          br
           .container
             label(for="prodColor") Choose Colors*
             br
             input#vehicle1(type='checkbox' name='prodColor' value='Black')
             label(for='prodColor')  Black
-
-
-
             br
             input#vehicle2(type='checkbox' name='prodColor' value='White')
             label(for='prodColor')  White
             br
+            input#vehicle3(type='checkbox' name='prodColor' value='BlackAndGray')
+            label(for='prodColor')  Black And Gray
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='BlackAndBrown')
+            label(for='prodColor')  Black And Brown
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='BlackAndWhite')
+            label(for='prodColor')  Black And White
+
+            br
             input#vehicle3(type='checkbox' name='prodColor' value='Gray')
             label(for='prodColor')  Gray
             br
+            input#vehicle3(type='checkbox' name='prodColor' value='Silver')
+            label(for='prodColor')  Silver
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='Gold')
+            label(for='prodColor')  Gold
+            br
             input#vehicle3(type='checkbox' name='prodColor' value='Green')
             label(for='prodColor')  Green
+            br
+            input#vehicle3(type='checkbox' name='prodColor' value='BlackMilitary')
+            label(for='prodColor')  Black Military
             br
             input#vehicle3(type='checkbox' name='prodColor' value='Red')
             label(for='prodColor')  Red
@@ -96,13 +125,9 @@ block content
             label(for='prodColor')  Brown
             br
 
+
           
-          br
-          label(for="prodCategory") Choose type*
-          select(name="prodCategory" class="form-control" required)  
-              option(value="") Choose type
-              each e in categories 
-                  option(value=e._id)= e.catName
+
           br
           .containerSizes
             //- label(for="size" ) Product Sizes*
@@ -196,6 +221,7 @@ block content
               input#vehicle3(type='checkbox' name='size' value='4XL')
               label(for='size')  4XL
               br
+
             br
           label(for="prodImg") Product Image*
           input(type="file" name="prodImg" class="form-control" multiple)

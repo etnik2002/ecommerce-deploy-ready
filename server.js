@@ -4,7 +4,9 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const path = require('path');
 const passport = require('passport');
-require('dotenv').config();
+
+const dotenv = require('dotenv');
+dotenv.config();
 const bodyParser = require('body-parser');
 //import routes
 const Product = require('./models/Product');
@@ -48,7 +50,8 @@ app.use(
     }),
   })
 );
-
+const porttttt = process.env.PORT;
+console.log({ porttttt });
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -68,10 +71,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.get('/', async (req, res) => {
-  const isFeatured = await Product.find({ isFeatured: true }).limit(4);
+  const isFeatured = await Product.find({ isFeatured: true })
+    .limit(3)
+    .sort({ createdAt: 'desc' });
   const products = await Product.find({}).lean();
   const allProducts = products.length;
-  const categories = await Categories.find({});
+  const categories = await Categories.find({ active: true }).sort({
+    createdAt: 'desc',
+  });
 
   res.render('index', {
     isFeatured,
@@ -81,6 +88,17 @@ app.get('/', async (req, res) => {
   });
 });
 
+app.get('/error', (req, res) => {
+  res.render('errors/404');
+});
+
+app.get('/discounts', async (req, res) => {
+  const productsWithDiscount = await Product.find({ discount: { $gt: 0 } });
+
+  console.log({ productsWithDiscount });
+  res.render('products/withDiscount', { productsWithDiscount });
+});
+
 app.get('/orders/unconfirmed', async (req, res) => {
   const unconfirmedOrders = await Order.find({ status: false });
   console.log({ unconfirmedOrders: unconfirmedOrders.length });
@@ -88,28 +106,47 @@ app.get('/orders/unconfirmed', async (req, res) => {
   res.render('orders/unconfirmed', { unconfirmedOrders });
 });
 
+app.get('/orders/confirmed', async (req, res) => {
+  const confirmedOrders = await Order.find({ status: true });
+
+  console.log({ confirmedOrders: confirmedOrders.length });
+
+  res.render('orders/confirmed', { confirmedOrders });
+});
+
 app.get('/admin', async (req, res) => {
   const product = await Product.find({});
-  const allOrders = await Order.find({}).sort({ createdAt: 'desc' });
+  const allOrders = await Order.find({}).sort({ createdAt: 'desc' }).limit(10);
   const allProds = product.length;
 
   const totalOrders = await Order.find({});
 
-  // const totalOrders = await Order.aggregate([
-  //   {
-  //     $group: {
-  //       _id: null,
-  //       total: {
-  //         $sum: '$productPrice',
-  //       },
-  //     },
-  //   },
-  //   { $project: { _id: 0, total: 1 } },
-  // ]);
+  const totalOrdersPriceSum = await Order.aggregate([
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: '$productPrice',
+        },
+      },
+    },
+  ]);
+
+  console.log({ totalOrdersPriceSum });
 
   let total = 0;
-  for (let i = 0; i < totalOrders.length; i++)
-    total += totalOrders[i].productPrice;
+  let takenFromTotal = 0;
+  let totalPrice = 0;
+  for (let i = 0; i < totalOrders.length; i++) {
+    total += totalOrders[i].productPrice * totalOrders[i].quantity;
+    takenFromTotal +=
+      (totalOrders[i].productPrice *
+        totalOrders[i].quantity *
+        totalOrders[i].discount) /
+      100;
+
+    totalPrice = total - takenFromTotal;
+  }
 
   const unconfirmedOrders = await Order.find({ status: false });
 
@@ -146,6 +183,9 @@ app.get('/admin', async (req, res) => {
 
   let increase = (todayOrders.length / yesturdayOrders.length) * 100;
 
+  const admins = await User.find({ userRole: 'admin' });
+  const confirmedOrders = await Order.find({ status: true });
+
   res.render('adminPanel', {
     allProds,
     orders,
@@ -156,8 +196,10 @@ app.get('/admin', async (req, res) => {
     ordersThisWeek,
     increase,
     unconfirmedOrders,
-
-    total,
+    confirmedOrders,
+    admins,
+    totalPrice,
+    message: req.flash('success'),
   });
 });
 
@@ -192,8 +234,10 @@ app.post('/admin/:id', async (req, res) => {
         `<h1>Hello ${orderEmail.customerName}, Your order has been confirmed ↓ </h1>` +
         'Admin Email : ' +
         'etnikz2002@gmail.com' +
-        ` This is the product you ordered :  http://localhost:5000/products/${orderEmail.productID},
-      if you have any questions feel free to contact the admin email.
+        ` This is the product you ordered :  http://localhost:8081/products/${orderEmail.productID},
+          Estimated time of arrival : ${req.body.eta} days.
+          For any changes we will contact you in this email.
+          If you have any questions feel free to contact the admin email.
       `,
     });
 
@@ -215,10 +259,12 @@ app.post('/admin/:id', async (req, res) => {
       { $set: { status: true } }
     );
 
+    req.flash('success', 'Order confirmed successfully ');
+
     res.redirect('/admin?confirmed=true');
   } catch (error) {
     console.log(error);
-    res.redirect('/admin?confirmed=false');
+    res.redirect('/error');
   }
 }),
   app.post('/admin/unconfirm/:id', async (req, res) => {
@@ -233,6 +279,12 @@ app.post('/admin/:id', async (req, res) => {
         { _id: req.params.id },
         { $set: { status: false } }
       );
+
+      // setInterval(async () => {
+      await unconfirmOrder.delete();
+      // }, 50000);
+
+      req.flash('success', 'Order Successfully canceled and deleted');
 
       const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -255,7 +307,7 @@ app.post('/admin/:id', async (req, res) => {
           `<h1>Hello ${orderEmail.customerName}, Your order has been canceled ↓ </h1>` +
           'Admin Email : ' +
           'etnikz2002@gmail.com' +
-          ` This is the product you ordered :  http://localhost:5000/products/${orderEmail.productID},
+          ` This is the product you ordered :  http://localhost:8081/products/${orderEmail.productID},
         For more details, do not hesitate to contact the admin email.
         Best regards!
         `,
@@ -263,15 +315,15 @@ app.post('/admin/:id', async (req, res) => {
 
       res.redirect('/admin?unconfirmed=true');
     } catch (error) {
-      console.log(error);
-      res.redirect('/admin?unconfirmed=false');
+      console.error(error);
+      res.redirect('/error');
     }
   });
 
-app.get('/:id', getSingleCatProducts);
+app.get(`/:id`, getSingleCatProducts);
 
 app.use(flash());
 
-app.listen(PORT, (req, res) => {
+app.listen(process.env.PORT | 8182, () => {
   console.log(`server listening at http://localhost:${PORT}`);
 });

@@ -22,7 +22,18 @@ const userSchema = mongoose.Schema(
       enum: ['user', 'admin', 'ceo'],
       default: 'user',
     },
+    city: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    liked: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Product', unique: true },
+    ],
   },
   { timestamps: true }
 );
