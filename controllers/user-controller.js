@@ -131,7 +131,7 @@ module.exports = {
     const allAdmins = await User.find({ userRole: 'admin' }).sort({
       createdAt: 'desc',
     });
-    console.log({ allAdmins });
+
     const user = await User.findById({ _id: req.user.id });
 
     res.render('users/ceoManageAdmins', { allAdmins, user });

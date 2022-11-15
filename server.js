@@ -325,5 +325,5 @@ app.get(`/:id`, getSingleCatProducts);
 app.use(flash());
 
 app.listen(process.env.PORT | 8182, () => {
-  console.log(`server listening at http://localhost:${PORT}`);
+  console.log(`server listening at http://localhost:${8182}`);
 });
