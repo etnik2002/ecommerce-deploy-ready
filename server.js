@@ -17,7 +17,7 @@ const productsRoutes = require('./routes/product.js');
 const cartRoutes = require('./routes/cart.js');
 const orderRoutes = require('./routes/orders.js');
 const categoriesRoutes = require('./routes/categories.js');
-const PORT = 8081;
+// const PORT = 8081;
 const { assign } = require('nodemailer/lib/shared');
 
 const lidhuMeDatabase = require('./database');
@@ -463,6 +463,8 @@ app.post('/payment-paypal', (req, res) => {
 
 app.use(flash());
 
-app.listen(3000, () => {
-  console.log(`server listening at http://localhost:${3000}`);
+const PORT = process.env.PORT || 3500;
+
+app.listen(PORT, () => {
+  console.log(`server listening at http://localhost:${PORT}`);
 });
