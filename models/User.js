@@ -24,13 +24,14 @@ const userSchema = mongoose.Schema(
     },
     city: {
       type: String,
-      required: true,
+      // required: true,
     },
     address: {
       type: String,
-      required: true,
+      // required: true,
     },
-    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+
     liked: [
       { type: mongoose.Schema.Types.ObjectId, ref: 'Product', unique: true },
     ],

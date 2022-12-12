@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Order = require('../models/Order');
+const nodemailer = require('nodemailer');
 
 module.exports = {
   getUsers: (req, res) => {
@@ -55,16 +57,28 @@ module.exports = {
         .populate('orders')
         .populate('liked');
 
-      res.render('users/profile', { user, message: req.flash('success') });
+      const userID = req.user._id;
+
+      const userOrders = await Order.find({ customer: userID })
+        .populate('productID')
+        .sort({ createdAt: 'desc' });
+
+      console.log({ userOrders: userOrders });
+
+      res.render('users/profile', {
+        user,
+        userOrders,
+        message: req.flash('success'),
+      });
     } catch (error) {
-      if (error) {
-        console.log(error);
-        res.render('users/profile', {
-          user,
-          // likedProducts,
-          message: req.flash('error'),
-        });
-      }
+      // if (error) {
+      console.log(error);
+      // res.render('users/profile', {
+      //   // user,
+      //   // likedProducts,
+      //   message: req.flash('error'),
+      // });
+      // }
     }
   },
 
@@ -105,9 +119,14 @@ module.exports = {
   },
 
   getOrderedProduct: async (req, res) => {
-    const user = await User.findById({ _id: req.user.id }).populate('orders');
-    console.log({ user });
-    res.render('users/orderedProduct', { user });
+    const userID = req.user._id;
+
+    const singleOrder = await Order.findById({ _id: req.params.id }).populate(
+      'productID'
+    );
+
+    console.log({ singleOrder });
+    res.render('users/orderedProduct', { singleOrder });
   },
   postDeleteUser: async (req, res) => {
     try {
@@ -149,6 +168,71 @@ module.exports = {
     } catch (error) {
       console.error(error);
       res.redirect('errors/404');
+    }
+  },
+
+  adminGetAllUsers: async (req, res) => {
+    const allUsers = await User.find({ userRole: 'user' });
+    res.render('users/allUsers', { allUsers });
+  },
+
+  getResetPassword: async (req, res) => {
+    res.render('users/resetPassword');
+  },
+  postResetPassword: async (req, res) => {
+    try {
+      const reset_pw_email = req.body.reset_pw_email;
+      console.log({ email: reset_pw_email });
+
+      const user = await User.findOne({ email: reset_pw_email });
+      console.log({ user });
+
+      const pw = req.body.newPassword;
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        port: 587,
+        auth: {
+          user: 'etnikz2002@gmail.com',
+          pass: 'vysmnurlcmrzcwad',
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      const ceoEmail = 'etnikz2002@gmail.com';
+
+      let info = await transporter.sendMail({
+        from: ceoEmail,
+        to: reset_pw_email,
+        subject: 'Password reset',
+        html:
+          `<h1>Hi ${user.username} , change your password here! </h1>` +
+          `
+          <form action="http://localhost:3000/users/password-reset" method="POST">
+            <input type="text" name="newPassword" />
+            <button type="submit" value="Submit">Reset</button>
+          </form> 
+          `,
+      });
+
+      console.log('Message sent: %s', info.messageId);
+
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+      try {
+        const updateUser = await User.findOneAndUpdate(
+          { email: reset_pw_email },
+          pw
+        );
+        console.log({ updateUser });
+      } catch (error) {
+        console.log('error occured');
+      }
+      res.redirect('/?success=true');
+    } catch (error) {
+      console.error(error);
     }
   },
 };

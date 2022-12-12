@@ -9,30 +9,26 @@ html
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
 
 
-    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
-      a.navbar-brand(href='/') ED-Store
-      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
-        span.navbar-toggler-icon
+    nav.navbar.navbar-expand-custom.navbar-mainbg
+      a.navbar-brand.navbar-logo(href='/') 
+      button.navbar-toggler(type='button' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        i.fas.fa-bars.text-white
       #navbarSupportedContent.collapse.navbar-collapse
-        ul.navbar-nav.mr-auto
-          li.nav-item.active
-            a.nav-link(href='/')
-              i.fa.fa-home
-              |           Home
-              span.sr-only (current)
-          li.nav-item
-            a.nav-link(href='/products')
-              i.fa.fa-envelope-o
-                span.badge.bg-danger #{allProducts}
-              |           Buy
+        ul.navbar-nav.ml-auto
+          .hori-selector
+            .left
+            .right
 
           li.nav-item
-            a.nav-link(href='/users/profile')
-              i.fa.fa-globe
-              | Profile
-          form.form-inline.my-2.my-lg-0
-            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+            a.nav-link(href='/products')
+              i.far.fa-calendar-alt
+              | Home
+          li.nav-item
+            a.nav-link(href='/products')
+              i.far.fa-calendar-alt
+              | Buy
+
+
 
     section.vh-100(style='background-color: #eee;')
       .container.h-100
@@ -74,7 +70,7 @@ html
                         .form-outline.flex-fill.mb-0
                           input#form3Example4c.form-control(type='password' name="password")
                           label.form-label(for='password' ) Password
-                      
+                      a(href="/google")  google 
                       .form-check.d-flex.justify-content-center.mb-5
                         input#form2Example3c.form-check-input.me-2(type='checkbox' value='')
                         label.form-check-label(for='form2Example3')
@@ -86,3 +82,101 @@ html
                         button.btn.btn-primary.btn-lg(type="submit" value="Regjistrohu" class="btn btn-success") Register
                   .col-md-10.col-lg-6.col-xl-7.d-flex.align-items-center.order-1.order-lg-2
                     img.img-fluid(src='https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp' alt='Sample image')
+
+    script.
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+
+      // ---------Responsive-navbar-active-animation-----------
+      function test(){
+      var tabsNewAnim = $('#navbarSupportedContent');
+      var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+      var activeItemNewAnim = tabsNewAnim.find('.active');
+      var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+      var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+      var itemPosNewAnimTop = activeItemNewAnim.position();
+      var itemPosNewAnimLeft = activeItemNewAnim.position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      $("#navbarSupportedContent").on("click","li",function(e){
+      $('#navbarSupportedContent ul li').removeClass("active");
+      $(this).addClass('active');
+      var activeWidthNewAnimHeight = $(this).innerHeight();
+      var activeWidthNewAnimWidth = $(this).innerWidth();
+      var itemPosNewAnimTop = $(this).position();
+      var itemPosNewAnimLeft = $(this).position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      });
+      }
+      $(document).ready(function(){
+      setTimeout(function(){ test(); });
+      });
+      $(window).on('resize', function(){
+      setTimeout(function(){ test(); }, 500);
+      });
+      $(".navbar-toggler").click(function(){
+      $(".navbar-collapse").slideToggle(300);
+      setTimeout(function(){ test(); });
+      });
+      // --------------add active class-on another-page move----------
+      jQuery(document).ready(function($){
+      // Get current path and find target link
+      var path = window.location.pathname.split("/").pop();
+      // Account for home page with empty path
+      if ( path == '' ) {
+      path = 'index.html';
+      }
+      var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+      // Add active class to target link
+      target.parent().addClass('active');
+      });
+      
+      // Add active class on another page linked
+      // ==========================================
+      //- $(window).on('load',function () {
+      //-     var current = location.pathname;
+      //-     console.log(current);
+      //-     $('#navbarSupportedContent ul li a').each(function(){
+      //-         var $this = $(this);
+      //-         // if the current path is like this link, make it active
+      //-         if($this.attr('href').indexOf(current) !== -1){
+      //-             $this.parent().addClass('active');
+      //-             $this.parents('.menu-submenu').addClass('show-dropdown');
+      //-             $this.parents('.menu-submenu').parent().addClass('active');
+      //-         }else{
+      //-             $this.parent().removeClass('active');
+      //-         }
+      //-     })
+      //- });

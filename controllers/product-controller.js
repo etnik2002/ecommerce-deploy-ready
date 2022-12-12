@@ -12,13 +12,6 @@ const { assign } = require('nodemailer/lib/shared');
 module.exports = {
   getProducts: async (req, res) => {
     const prod = await Product.find({}).lean();
-    // const user = await User.findById({ _id: req.user.id }).populate('liked');
-
-    // const youLiked = await Product.find({ usersLikedThis: user._id });
-    // console.log({ youLiked });
-    // const likedProductsByUser = await Product.find({
-    //   usersLikedThis: req.user.id,
-    // });
 
     const categories = await Categories.find({ active: true }).sort({
       createdAt: 'desc',
@@ -39,9 +32,6 @@ module.exports = {
           res.render('products/main', {
             products,
             categories,
-            // likedProductsByUser,
-            // user,
-            // youLiked,
             current: page,
             pages: Math.ceil(count / perPage),
           });
@@ -106,6 +96,11 @@ module.exports = {
   },
 
   viewProduct: async (req, res) => {
+    const client_id =
+      'AVDn0zM75RGU80cgKLF3P9vmkT7t3cc_N2k5u-pzfBCPWVDYlwF7c2sK_TIQkf5vhBBg7yD1-7E4avAf';
+    const client_secret =
+      'EIzs4sPcr3kHJPhrJ_hLuKvePQIbct-Onmniz3abrU15ZXqB2XDKD0kP5FXYRbwzj19Hfokl8pJVft3s';
+
     const categories = await Categories.find({ active: true }).sort({
       createdAt: 'desc',
     });
@@ -129,12 +124,18 @@ module.exports = {
       .populate('prodCategory')
       .limit(4);
 
+    const key =
+      'pk_test_51K1DdaDAZApOs2EVXCiMmQnlAa9TIqCpnuhrDrpiKqdTGuGlNvbbyYnaEPgl2m0Qg2WfBC6r6j2wfP2jLdDwPdnm00D2bcqz6v';
+
     res.render('products/viewProduct', {
       singleProduct,
       recommendedProducts,
       inDiscount,
       categories,
       prod,
+      key,
+      client_secret,
+      client_id,
     });
   },
 
@@ -243,14 +244,6 @@ module.exports = {
 
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info2));
 
-      const saveUser = await User.findOneAndUpdate(
-        { _id: req.user.id },
-        { $push: { orders: req.params.id } },
-        { new: true }
-      );
-
-      await saveUser.save();
-
       req.flash('success', `Order successfully placed!`);
       req.flash('error', `Something went wrong, please try again!`);
 
@@ -273,6 +266,14 @@ module.exports = {
         .then(console.log('true'))
         .catch('false');
       console.log({ savedOrder });
+
+      const saveUser = await User.findOneAndUpdate(
+        { _id: req.user.id },
+        { $push: { orders: savedOrder.id } },
+        { new: true }
+      );
+
+      await saveUser.save();
 
       const choonseQuantity = req.body.quantity;
 
@@ -387,6 +388,7 @@ module.exports = {
       console.error(error);
     }
   },
+
   searchedProducts: async (req, res) => {
     let query = req.query.search;
     const user = await User.findById({ _id: req.user.id });
@@ -408,8 +410,8 @@ module.exports = {
             res.redirect('errors/404');
             console.error(err);
           }
-          if (newSearch.length < 0) {
-            res.redirect('/');
+          if (!newSearch) {
+            res.redirect('/?seach=null&ERROR=true');
           }
         }
       }

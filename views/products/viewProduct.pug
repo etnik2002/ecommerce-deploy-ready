@@ -11,43 +11,39 @@ block content
     script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.css')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.js')
+    script(src='https://www.paypal.com/sdk/js?client-id=AVDn0zM75RGU80cgKLF3P9vmkT7t3cc_N2k5u-pzfBCPWVDYlwF7c2sK_TIQkf5vhBBg7yD1-7E4avAf>')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.js')
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
 
 
-    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
-      a.navbar-brand(href='/') ED-Store
-      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
-        span.navbar-toggler-icon
+    nav.navbar.navbar-expand-custom.navbar-mainbg
+      a.navbar-brand.navbar-logo(href='/') 
+      button.navbar-toggler(type='button' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        i.fas.fa-bars.text-white
       #navbarSupportedContent.collapse.navbar-collapse
-        ul.navbar-nav.mr-auto
-          li.nav-item.active
+        ul.navbar-nav.ml-auto
+          .hori-selector
+            .left
+            .right
+    
+          li.nav-item
             a.nav-link(href='/')
-              i.fa.fa-home
-              |           Home
-              span.sr-only (current)
+              i.far.fa-chart-bar
+              | Home
           li.nav-item
             a.nav-link(href='/products')
-              i.fa.fa-gift
-                span.badge.bg-danger #{allProducts}
-              |           Buy
-
+              i.far.fa-calendar-alt
+              | Buy
           li.nav-item
             a.nav-link(href='/users/profile')
-              i.fa.fa-globe
+              i.far.fa-user
               | Profile
-
-          .dropdown
-            button.dropbtn Categories
-            .dropdown-content
-              each category in categories
-                a(href="/"+category._id) #{category.catName}
-
-          //- form.form-inline.my-2.my-lg-0
-          //-   input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-          //-   button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
     
-
+              //- form.form-inline.my-2.my-lg-0
+              //-   input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+              //-   button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+        
+    
   
 
 
@@ -245,8 +241,57 @@ block content
                 input(type="text" name="price" value=p.prodPrice style="border:none; display:none").green 
                 input(type="number" name="discount" value=p.discount style="display:none")
 
-                input.btn.mt-4.btn-primary.btn-block(type='submit' value='Order Now' style='border-radius:100px; background-color:#2447f9; width:50%')
-              .text-center.p-3
+                input.btn.mt-4.btn-primary.btn-block(type='submit' value='Pay Cash' style='border-radius:100px; background-color:green; width:25%')
+                br
+
+
+                //- STRIPEEEEEEEEEEEEE PAYMENTTTTTTTTTTTtTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
+                //- p(style="left:10%; position:relative") or
+
+
+
+              //- form(action="/payment/"+p._id method="post")
+                //- if p.inStock < 1
+                //-   label(for="quantity") Choose quantity 
+                //-   br
+                //-   input(type="number" name="quantity" class="form-control" placeholder="Quantity..." style="width: 50%" required) 
+                //- else
+                //-   select(name="quantity" class="form-control" style="width: 50%" required)  
+                //-       option(value="")  Choose quantity
+
+                //-       - for (let i = 1; i < p.inStock+1; i++) {
+                //-           option(value=p.inStock[i]) #{i}
+                //-       - }
+
+                     
+                //- if p.prodColor.length > 0
+                //-   .pt-2
+                //-     h5 Choose color if available
+                //-     select(name="color" class="form-control" style="width: 50%" required)  
+                //-       each color,i in p.prodColor
+                //-         option(value=color) #{color}
+               
+                //- if p.size.length > 0
+                //-   h5 Choose size
+                //-   select(name="color" class="form-control" style="width: 50%" )  
+                //-     if p.size
+                //-       each size,i in p.size
+                //-         option(value=size) #{size}
+                //- br
+                //- label(for="phone") Your Phone Number* 
+                //- input(type="number" name="phone" class="form-control" style="width: 50%" required)
+                //- br
+                //- label(for="address") Your Address* 
+                //- input(type="text" name="address" class="form-control" style="width: 50%" required)
+                //- br
+                script(src="//checkout.stripe.com/v2/checkout.js" class="stripe-button" data-key=key data-currency="mkd" data-name=p.prodName data-amount=p.prodPrice*100) 
+
+            form(action="/payment-paypal", method="post") 
+              button#paypal(type="submit") Credit or debit card
+              
+                
+              
 
 
           .container-fluid
@@ -305,26 +350,122 @@ block content
 
 
     script. 
-         $('.portfolio-menu ul li').click(function(){
-         	$('.portfolio-menu ul li').removeClass('active');
-         	$(this).addClass('active');
-         	
-         	var selector = $(this).attr('data-filter');
-         	$('.portfolio-item').isotope({
-         		filter:selector
-         	});
-         	return  false;
-         });
-         $(document).ready(function() {
-         var popup_btn = $('.popup-btn');
-         popup_btn.magnificPopup({
-         type : 'image',
-         gallery : {
-         	enabled : true
-         }
-         });
-         });
+      $('.portfolio-menu ul li').click(function(){
+      	$('.portfolio-menu ul li').removeClass('active');
+      	$(this).addClass('active');
+
+      	var selector = $(this).attr('data-filter');
+      	$('.portfolio-item').isotope({
+      		filter:selector
+      	});
+      	return  false;
+      });
+      $(document).ready(function() {
+      var popup_btn = $('.popup-btn');
+      popup_btn.magnificPopup({
+      type : 'image',
+      gallery : {
+      	enabled : true
+      }
+      });
+      });
 
 
             
 
+    script.
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks on the button, open the modal
+      btn.onclick = function() {
+        modal.style.display = "block";
+      }
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+
+      // ---------Responsive-navbar-active-animation-----------
+      function test(){
+      var tabsNewAnim = $('#navbarSupportedContent');
+      var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+      var activeItemNewAnim = tabsNewAnim.find('.active');
+      var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+      var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+      var itemPosNewAnimTop = activeItemNewAnim.position();
+      var itemPosNewAnimLeft = activeItemNewAnim.position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      $("#navbarSupportedContent").on("click","li",function(e){
+      $('#navbarSupportedContent ul li').removeClass("active");
+      $(this).addClass('active');
+      var activeWidthNewAnimHeight = $(this).innerHeight();
+      var activeWidthNewAnimWidth = $(this).innerWidth();
+      var itemPosNewAnimTop = $(this).position();
+      var itemPosNewAnimLeft = $(this).position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      });
+      }
+      $(document).ready(function(){
+      setTimeout(function(){ test(); });
+      });
+      $(window).on('resize', function(){
+      setTimeout(function(){ test(); }, 500);
+      });
+      $(".navbar-toggler").click(function(){
+      $(".navbar-collapse").slideToggle(300);
+      setTimeout(function(){ test(); });
+      });
+      // --------------add active class-on another-page move----------
+      jQuery(document).ready(function($){
+      // Get current path and find target link
+      var path = window.location.pathname.split("/").pop();
+      // Account for home page with empty path
+      if ( path == '' ) {
+      path = 'index.html';
+      }
+      var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+      // Add active class to target link
+      target.parent().addClass('active');
+      });
+      // Add active class on another page linked
+      // ==========================================
+      $(window).on('load',function () {
+          var current = location.pathname;
+          console.log(current);
+          $('#navbarSupportedContent ul li a').each(function(){
+              var $this = $(this);
+              // if the current path is like this link, make it active
+              if($this.attr('href').indexOf(current) !== -1){
+                  $this.parent().addClass('active');
+                  $this.parents('.menu-submenu').addClass('show-dropdown');
+                  $this.parents('.menu-submenu').parent().addClass('active');
+              }else{
+                  $this.parent().removeClass('active');
+              }
+          })
+      });

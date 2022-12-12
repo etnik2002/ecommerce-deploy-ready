@@ -1,5 +1,10 @@
 const router = require('express').Router();
-const { kerkohetIdentifikimi, isAdmin, isCeo } = require('../middleware/auth');
+const {
+  kerkohetIdentifikimi,
+  isAdmin,
+  isCeo,
+  hasPermissionToEditAndDelete,
+} = require('../middleware/auth');
 const { productUpload } = require('../middleware/multer');
 const Product = require('../models/Product');
 

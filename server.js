@@ -4,7 +4,6 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const path = require('path');
 const passport = require('passport');
-
 const dotenv = require('dotenv');
 dotenv.config();
 const bodyParser = require('body-parser');
@@ -12,18 +11,39 @@ const bodyParser = require('body-parser');
 const Product = require('./models/Product');
 const { getSingleCatProducts } = require('./controllers/categories-controller');
 const flash = require('connect-flash');
-
+const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/user.js');
 const productsRoutes = require('./routes/product.js');
 const cartRoutes = require('./routes/cart.js');
 const orderRoutes = require('./routes/orders.js');
 const categoriesRoutes = require('./routes/categories.js');
 const PORT = 8081;
+const { assign } = require('nodemailer/lib/shared');
 
 const lidhuMeDatabase = require('./database');
 const User = require('./models/User');
 const Categories = require('./models/Categories');
 const Order = require('./models/Order');
+const { ceoManageAdmins } = require('./controllers/user-controller');
+
+const STRIPE_TEST_PUBLISHABLE_KEY =
+  'pk_test_51K1DdaDAZApOs2EVXCiMmQnlAa9TIqCpnuhrDrpiKqdTGuGlNvbbyYnaEPgl2m0Qg2WfBC6r6j2wfP2jLdDwPdnm00D2bcqz6v';
+const STRIPE_TEST_SECRET_KEY =
+  'sk_test_51K1DdaDAZApOs2EV0Ig7LD6s4lAqAHm3tk9j3SKl5yhKqbDkm8xsUXgpJZ0PL8s0eXm7MK7dBM7ojhHmn0f3BosX00ICXrXpbV';
+
+const stripe = require('stripe')(STRIPE_TEST_SECRET_KEY);
+
+const paypal = require('paypal-rest-sdk');
+
+paypal.configure({
+  mode: 'sandbox', // or 'live'
+  client_id:
+    'AVDn0zM75RGU80cgKLF3P9vmkT7t3cc_N2k5u-pzfBCPWVDYlwF7c2sK_TIQkf5vhBBg7yD1-7E4avAf',
+  client_secret:
+    'EIzs4sPcr3kHJPhrJ_hLuKvePQIbct-Onmniz3abrU15ZXqB2XDKD0kP5FXYRbwzj19Hfokl8pJVft3s',
+});
+
+// require('./middleware/google-auth');
 lidhuMeDatabase();
 
 app.use(express.static('public'));
@@ -33,7 +53,9 @@ app.use(
     extended: true,
   })
 );
+
 app.use(bodyParser.json());
+// require('./middleware/google-auth');
 require('./middleware/passport')(passport);
 app.use(require('connect-flash')());
 
@@ -61,6 +83,7 @@ app.use('/products', productsRoutes);
 app.use('/cart', cartRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoriesRoutes);
+app.use(cookieParser());
 // middlewares
 app.use(express.static(__dirname + '/public'));
 app.get('/public', express.static('public'));
@@ -119,7 +142,7 @@ app.get('/admin', async (req, res) => {
   const allOrders = await Order.find({}).sort({ createdAt: 'desc' }).limit(10);
   const allProds = product.length;
 
-  const totalOrders = await Order.find({});
+  const totalOrders = await Order.find({ status: true });
 
   const totalOrdersPriceSum = await Order.aggregate([
     {
@@ -163,21 +186,21 @@ app.get('/admin', async (req, res) => {
   let todayOrders = await Order.find({
     createdAt: {
       $gte: new Date().getTime() - 24 * 60 * 60 * 1000,
-      $lt: new Date().getTime(),
+      $lte: new Date().getTime(),
     },
   });
 
   let yesturdayOrders = await Order.find({
     createdAt: {
       $gte: new Date().getTime() - 24 * 60 * 60 * 1000 * 2,
-      $lt: new Date().getTime() - 24 * 60 * 60 * 1000,
+      $lte: new Date().getTime() - 24 * 60 * 60 * 1000,
     },
   });
 
   let ordersThisWeek = await Order.find({
     createdAt: {
       $gte: new Date().getTime() - 24 * 60 * 60 * 1000 * 7,
-      $lt: new Date().getTime(),
+      $lte: new Date().getTime(),
     },
   });
 
@@ -280,7 +303,7 @@ app.post('/admin/:id', async (req, res) => {
         { $set: { status: false } }
       );
 
-      // setInterval(async () => {
+      // setTimeout(async () => {
       await unconfirmOrder.delete();
       // }, 50000);
 
@@ -322,8 +345,124 @@ app.post('/admin/:id', async (req, res) => {
 
 app.get(`/:id`, getSingleCatProducts);
 
+app.post('/payment/:id', async (req, res) => {
+  const user = await User.find({ _id: req.user.id });
+  const product = await Product.findById(req.params.id);
+  const price = product.prodPrice / 61.5;
+  console.log({ product });
+  console.log({ price }, ' EURO');
+
+  stripe.customers
+    .create({
+      email: req.body.stripeEmail,
+      source: req.body.stripeToken,
+      name: req.user.username,
+      userID: req.user._id,
+      phone: req.user.phone,
+      address: {
+        line1: req.body.address,
+        city: req.body.city,
+        country: 'macedonia',
+      },
+    })
+
+    .then((customer) => {
+      return stripe.charges.create({
+        amount: product.prodPrice,
+        description: 'web dev product',
+        currency: 'eur',
+        customer: customer.id,
+      });
+    })
+    .then((charge) => {
+      console.log({ charge });
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+
+  const newOrder = new Order({
+    customer: req.user._id,
+    customerName: req.user.username,
+    customerEmail: req.user.email,
+    customerPhone: req.user.phone,
+    customerAddress: req.body.address,
+    customerCity: req.body.city,
+    productID: req.params.id,
+    productPrice: req.body.price,
+    discount: req.body.discount,
+    quantity: req.body.quantity,
+    status: false,
+  });
+
+  const savedOrder = await newOrder
+    .save()
+    .then(console.log('true'))
+    .catch('false');
+  console.log({ savedOrder });
+
+  const saveUser = await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { $push: { orders: savedOrder.id } },
+    { new: true }
+  );
+
+  await saveUser.save();
+
+  const choonseQuantity = req.body.quantity;
+
+  await Product.findOneAndUpdate(
+    { _id: req.params.id },
+    { $inc: { inStock: -choonseQuantity } }
+  );
+
+  await Product.findOneAndUpdate(
+    { _id: req.params.id },
+    { $inc: { sold: +choonseQuantity } }
+  );
+
+  if (product.inStock < 0) {
+    product.inStock = 0;
+  }
+
+  res.redirect('/?stripe-payment-accepted&order-placed=true');
+});
+
+app.post('/payment-paypal', (req, res) => {
+  paypal.payment.create(
+    {
+      intent: 'sale',
+      payer: {
+        payment_method: 'paypal',
+      },
+      redirect_urls: {
+        return_url: 'http://localhost:3000?success=true',
+        cancel_url: 'http://localhost:3000?success=false',
+      },
+      transactions: [
+        {
+          amount: {
+            total: 5432,
+            currency: 'USD',
+          },
+        },
+      ],
+    },
+
+    function (err, payment) {
+      if (err) {
+        console.error({ err });
+        res.redirect('/?payment-success=false');
+      } else {
+        console.log({ payment });
+        res.status(201).json(payment);
+      }
+    }
+  );
+});
+
 app.use(flash());
 
-app.listen(process.env.PORT | 8182, () => {
-  console.log(`server listening at http://localhost:${8182}`);
+app.listen(3000, () => {
+  console.log(`server listening at http://localhost:${3000}`);
 });

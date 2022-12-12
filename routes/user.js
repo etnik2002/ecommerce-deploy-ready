@@ -16,6 +16,9 @@ const {
   postDeleteUser,
   ceoManageAdmins,
   changeAdminRole,
+  adminGetAllUsers,
+  getResetPassword,
+  postResetPassword,
 } = require('../controllers/user-controller');
 
 router.get('/', getUsers);
@@ -62,5 +65,11 @@ router.get('/allAdmins', async (req, res) => {
 router.get('/ceo-manage/admins', ceoManageAdmins);
 
 router.post('/ceo/change-user-role/:id', isCeo, changeAdminRole);
+
+router.get('/all-users', isCeo, adminGetAllUsers);
+
+router.get('/password-reset', getResetPassword);
+
+router.post('/password-reset', postResetPassword);
 
 module.exports = router;

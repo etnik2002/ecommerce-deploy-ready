@@ -3,6 +3,9 @@ const LocalStrategy = require('passport-local');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const flash = require('connect-flash');
+// const mongoose = require('mongoose');
+// const ObjectId = require('mongodb').ObjectId;
+// var GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 module.exports = function (passport) {
   passport.use(
@@ -20,7 +23,7 @@ module.exports = function (passport) {
             null,
             false,
             { message: 'emaili nuk egziston' },
-            req.flash('error', 'Wrong credenticals, please try again!'),
+            // req.flash('error', 'Wrong credenticals, please try again!'),
             console.log('nuk egziston emaili')
           );
         }

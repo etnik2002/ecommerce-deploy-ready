@@ -9,34 +9,62 @@ html
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
 
 
-    nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
-      a.navbar-brand(href='/') ED-Store
-      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
-        span.navbar-toggler-icon
+    //- nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+    //-   a.navbar-brand(href='/') ED-Store
+    //-   button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+    //-     span.navbar-toggler-icon
+    //-   #navbarSupportedContent.collapse.navbar-collapse
+    //-     ul.navbar-nav.mr-auto
+    //-       li.nav-item.active
+    //-         a.nav-link(href='/')
+    //-           i.fa.fa-home
+    //-           |           Home
+    //-           span.sr-only (current)
+    //-       li.nav-item
+    //-         a.nav-link(href='/products')
+    //-           i.fa.fa-envelope-o
+    //-             span.badge.bg-danger #{allProducts}
+    //-           |           Buy
+    //-       li.nav-item
+    //-         a.nav-link(href='/users/profile')
+    //-           i.fa.fa-globe
+    //-           | Profile
+    //-       li.nav-item
+    //-         a.nav-link(href='/users/logout')
+    //-           i.fa.fa-globe
+    //-           | Login/Out
+    //-       form.form-inline.my-2.my-lg-0
+    //-         input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
+    //-         button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+
+    nav.navbar.navbar-expand-custom.navbar-mainbg
+      a.navbar-brand.navbar-logo(href='/') E-Store
+      button.navbar-toggler(type='button' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        i.fas.fa-bars.text-white
       #navbarSupportedContent.collapse.navbar-collapse
-        ul.navbar-nav.mr-auto
-          li.nav-item.active
-            a.nav-link(href='/')
-              i.fa.fa-home
-              |           Home
-              span.sr-only (current)
+        ul.navbar-nav.ml-auto
+          .hori-selector
+            .left
+            .right
+
           li.nav-item
             a.nav-link(href='/products')
-              i.fa.fa-envelope-o
-                span.badge.bg-danger #{allProducts}
-              |           Buy
+              i.far.fa-calendar-alt
+              | Home
           li.nav-item
-            a.nav-link(href='/users/profile')
-              i.fa.fa-globe
-              | Profile
-          li.nav-item
-            a.nav-link(href='/users/logout')
-              i.fa.fa-globe
-              | Login/Out
-          form.form-inline.my-2.my-lg-0
-            input.form-control.mr-sm-2(type='text' placeholder='Search' aria-label='Search')
-            button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+            a.nav-link(href='/products')
+              i.far.fa-calendar-alt
+              | Buy
 
+          li.nav-item.active
+            a.nav-link(href='/users/profile')
+              i.far.fa-user
+              | Profile
+
+          li.nav-item.active
+            a.nav-link(href='/users/logout')
+              i.far.fa-user
+              | Log out
 
     if message.length > 0
       .container
@@ -80,7 +108,7 @@ html
                   li.breadcrumb-item 
                     a(href='/products/create') Add new products
                   li.breadcrumb-item 
-                    a(href='#') Manage Users
+                    a(href='/users/all-users') Manage Users
                   li.breadcrumb-item 
                     a(href='/users/ceo-manage/admins') Manage Admins
                   li.breadcrumb-item 
@@ -91,7 +119,7 @@ html
 
 
     
-    .row
+    .row#row
       .col-lg-4
         .card.mb-3
           .card-body.text-center
@@ -126,7 +154,8 @@ html
               .col-sm-9
                 form(action="/users/update/"+user._id) 
                   button(class="btn btn-warning" style="color:white") Edit Profile
-                button#myBtn(class="btn btn-danger") Delete Account
+                  
+                button#myBtn(class="btn btn-danger") Delete account
               // The Modal
               #myModal.modal
                 // Modal content
@@ -151,31 +180,36 @@ html
             .col-sm-3
               p.mb-0 Your orders :
             .col-sm-9
-              each order in user.orders 
                 table.table
                   thead
                     tr
-                      th(scope='col') Product ID
+                      th(scope='col') Order ID
                       th(scope='col') Name
+                      th(scope='col') Status
                       th(scope='col') Original Price
                       th(scope='col') Image
                       //- th(scope='col') Status
                   tbody
-                    tr
-                      th(scope='row' class="badge bg-success") #{order._id}
-                      td #{order.prodName}
-                      td #{order.prodPrice} den
-                      td 
-                        a(href="/products/"+order._id) 
-                          img(src="/images/products/"+order.prodImg[0],style="max-width:50px; max-height:50px" alt="#{order.prodName}")
-                      //- td 
-                      //-   p(style="color:green") Confirmed
-                      td 
-                        button(class="btn btn-primary" ) 
-                          a(href="/products/"+order._id style="color:white") View Product 
+                    each order in userOrders
 
-    
+                      tr
+                        td(scope='row' class="badge bg-success") 
+                          a(href="/users/ordered/"+order._id style="color:white")  #{order._id}
+                        td #{order.productID.prodName.slice(0,11)}...
+                        if order.status == false
+                          td(style="color:red") Pending
+                        else 
+                          td(style="color:green")  Confirmed
 
+                        td #{order.productID.prodPrice} den
+                        td 
+                          a(href="/products/"+order.productID._id) 
+                            img(src="/images/products/"+order.productID.prodImg[0],style="max-width:50px; max-height:50px" alt=order.productID.prodName)
+                        //- td 
+                        //-   p(style="color:green") Confirmed
+                        td 
+                          button(class="btn btn-primary" ) 
+                            a(href="/products/"+order.productID._id style="color:white") View Product 
                 //- a(href="/users/ordered/"+order._id class="badge bg-success") Tap here to view #{order.prodName}
     
         else 
@@ -188,30 +222,7 @@ html
               p.text-muted.mb-0   
             hr
 
-  //- .container
-  //-   each order in user.liked
-  //-     table.table
-  //-       thead
-  //-         tr
-  //-           th(scope='col') Product ID
-  //-           th(scope='col') Name
-  //-           th(scope='col') Original Price
-  //-           th(scope='col') Image
-  //-           //- th(scope='col') Status
-  //-       tbody
-  //-         tr
-  //-           th(scope='row' class="badge bg-success") #{order._id}
-  //-           td #{order.prodName.split(' ').slice(0, 2).join(' ')}...
-  //-           td #{order.prodPrice} den
-  //-           td 
-  //-             a(href="/products/"+order._id) 
-  //-               img(src="/images/products/"+order.prodImg[0],style="max-width:50px; max-height:50px" alt=order.prodName)
-  //-           //- td 
-  //-           //-   p(style="color:green") Confirmed
-  //-           td 
-  //-             button(class="btn btn-primary" ) 
-  //-               a(href="/products/"+order._id style="color:white") View Product 
-
+  
 
     script.
       var modal = document.getElementById("myModal");
@@ -238,3 +249,74 @@ html
           modal.style.display = "none";
         }
       }
+
+
+      // ---------Responsive-navbar-active-animation-----------
+      function test(){
+      var tabsNewAnim = $('#navbarSupportedContent');
+      var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+      var activeItemNewAnim = tabsNewAnim.find('.active');
+      var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+      var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+      var itemPosNewAnimTop = activeItemNewAnim.position();
+      var itemPosNewAnimLeft = activeItemNewAnim.position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      $("#navbarSupportedContent").on("click","li",function(e){
+      $('#navbarSupportedContent ul li').removeClass("active");
+      $(this).addClass('active');
+      var activeWidthNewAnimHeight = $(this).innerHeight();
+      var activeWidthNewAnimWidth = $(this).innerWidth();
+      var itemPosNewAnimTop = $(this).position();
+      var itemPosNewAnimLeft = $(this).position();
+      $(".hori-selector").css({
+      "top":itemPosNewAnimTop.top + "px",
+      "left":itemPosNewAnimLeft.left + "px",
+      "height": activeWidthNewAnimHeight + "px",
+      "width": activeWidthNewAnimWidth + "px"
+      });
+      });
+      }
+      $(document).ready(function(){
+      setTimeout(function(){ test(); });
+      });
+      $(window).on('resize', function(){
+      setTimeout(function(){ test(); }, 500);
+      });
+      $(".navbar-toggler").click(function(){
+      $(".navbar-collapse").slideToggle(300);
+      setTimeout(function(){ test(); });
+      });
+      // --------------add active class-on another-page move----------
+      jQuery(document).ready(function($){
+      // Get current path and find target link
+      var path = window.location.pathname.split("/").pop();
+      // Account for home page with empty path
+      if ( path == '' ) {
+      path = 'index.html';
+      }
+      var target = $('#navbarSupportedContent ul li a[href="'+path+'"]');
+      // Add active class to target link
+      target.parent().addClass('active');
+      });
+      // Add active class on another page linked
+      // ==========================================
+      $(window).on('load',function () {
+          var current = location.pathname;
+          console.log(current);
+          $('#navbarSupportedContent ul li a').each(function(){
+              var $this = $(this);
+              // if the current path is like this link, make it active
+              if($this.attr('href').indexOf(current) !== -1){
+                  $this.parent().addClass('active');
+                  $this.parents('.menu-submenu').addClass('show-dropdown');
+                  $this.parents('.menu-submenu').parent().addClass('active');
+              }else{
+                  $this.parent().removeClass('active');
+              }
+          })
+      });
