@@ -6,6 +6,7 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const Order = require('../models/Order');
 const Categories = require('../models/Categories');
+const stripe = require('stripe')(process.env.STRIPE_TEST_SECRET_KEY);
 
 router.post('/payment/:id', async (req, res) => {
   const user = await User.find({ _id: req.user.id });
@@ -321,6 +322,10 @@ router.get('/orders/confirmed', async (req, res) => {
   console.log({ confirmedOrders: confirmedOrders.length });
 
   res.render('orders/confirmed', { confirmedOrders });
+});
+
+router.get('/error', (req, res) => {
+  res.render('errors/404');
 });
 
 module.exports = router;
