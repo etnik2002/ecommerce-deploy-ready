@@ -309,21 +309,6 @@ router.get('/discounts', async (req, res) => {
   res.render('products/withDiscount', { productsWithDiscount });
 });
 
-router.get('/orders/unconfirmed', async (req, res) => {
-  const unconfirmedOrders = await Order.find({ status: false });
-  console.log({ unconfirmedOrders: unconfirmedOrders.length });
-
-  res.render('orders/unconfirmed', { unconfirmedOrders });
-});
-
-router.get('/orders/confirmed', async (req, res) => {
-  const confirmedOrders = await Order.find({ status: true });
-
-  console.log({ confirmedOrders: confirmedOrders.length });
-
-  res.render('orders/confirmed', { confirmedOrders });
-});
-
 router.get('/error', (req, res) => {
   res.render('errors/404');
 });

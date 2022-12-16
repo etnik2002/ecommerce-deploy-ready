@@ -17,6 +17,21 @@ router.get('/', getAllOrders);
 
 router.post('/delete/:id', postDeleteOrder);
 
+router.get('/unconfirmed', async (req, res) => {
+  const unconfirmedOrders = await Order.find({ status: false });
+  console.log({ unconfirmedOrders: unconfirmedOrders.length });
+
+  res.render('orders/unconfirmed', { unconfirmedOrders });
+});
+
+router.get('/confirmed', async (req, res) => {
+  const confirmedOrders = await Order.find({ status: true });
+
+  console.log({ confirmedOrders: confirmedOrders.length });
+
+  res.render('orders/confirmed', { confirmedOrders });
+});
+
 router.get('/allOrders', isAdmin, async (req, res) => {
   const allOrders = await Order.find({}).sort({ createdAt: 'desc' });
   res.render('orders/allOrders', { allOrders });

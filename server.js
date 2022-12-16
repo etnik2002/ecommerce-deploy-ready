@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo');
 const path = require('path');
 const passport = require('passport');
 const bodyParser = require('body-parser');
+const Product = require('./models/Product');
 const { getSingleCatProducts } = require('./controllers/categories-controller');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
@@ -16,8 +17,12 @@ const cartRoutes = require('./routes/cart.js');
 const orderRoutes = require('./routes/orders.js');
 const categoriesRoutes = require('./routes/categories.js');
 const generalRoutes = require('./routes/general.js');
+const PORT = process.env.PORT || 3000;
 const lidhuMeDatabase = require('./database');
-const PORT = process.env.PORT | 8080;
+const User = require('./models/User');
+const Categories = require('./models/Categories');
+const Order = require('./models/Order');
+
 const stripe = require('stripe')(process.env.STRIPE_TEST_SECRET_KEY);
 
 lidhuMeDatabase();
@@ -47,8 +52,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cookieParser());
-app.use(flash());
 
 //use routes
 app.use('/', generalRoutes);
@@ -58,9 +61,12 @@ app.use('/cart', cartRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoriesRoutes);
 
+app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
-app.engine('pug', require('pug').__express);
 app.get('/public', express.static('public'));
+app.use(flash());
+
+app.engine('pug', require('pug').__express);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
