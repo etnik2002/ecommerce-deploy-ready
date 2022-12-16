@@ -300,4 +300,8 @@ router.get('/error', (req, res) => {
   res.render('errors/404');
 });
 
+router.get('/terms-of-services', (req, res) => {
+  res.render('termsOfServices');
+});
+
 module.exports = router;

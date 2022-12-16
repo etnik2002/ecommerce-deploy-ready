@@ -27,9 +27,11 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
               | Profile
 
 
-//- canvas#myChart(style='width:100%;max-width:700px')
 
-
+div(id="loading")
+  div(id="spinnerDiv")
+    div(id="loader")
+  
 
 #wrapper.d-flex
   // Sidebar
@@ -77,6 +79,8 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
 
               li
                 a.dropdown-item(href='/users/logout') Logout
+
+                
     .container-fluid.px-4
       .row.g-3.my-2
         .col-md-3
@@ -216,6 +220,11 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
     
 
 script.
+  window.onload = () => {
+    let isLoading = true;
+    document.getElementById('loader').innerHTML = "LOADING...";
+    
+    
 
   const orders2022 = 'http://localhost:3000/orders/orders2022';
   const orders2023 = 'http://localhost:3000/orders/orders2023';
@@ -229,9 +238,9 @@ script.
     //orders 2022
     const response2022 = await fetch(orders2022);
     allOrders2022 = await response2022.json();
-    console.log({allOrders2022})
+    console.table({allOrders2022})
     const data2022 = allOrders2022.length;
-    console.log({data2022})
+    console.table({data2022})
 
     //orders 2023
     const response2023 = await fetch(orders2023);
@@ -305,9 +314,18 @@ script.
     }
     });
 
+    isLoading=false;
+    console.log({isLoading})
+    //- var image = document.getElementById('spinner').src = "";
+
+
+    document.getElementById('loader').innerHTML = "";
+    document.getElementById('spinnerDiv').style.display='none';
   }
   getProducts();
 
+
+  }
   
 
 // /#page-content-wrapper
@@ -319,31 +337,3 @@ script.
   el.classList.toggle("toggled");
   };
 
-
-
- 
-
-      //- var modal = document.getElementById("myModal");
-
-      //- // Get the button that opens the modal
-      //- var btn = document.getElementById("myBtn");
-
-      //- // Get the <span> element that closes the modal
-      //- var span = document.getElementsByClassName("close")[0];
-
-      //- // When the user clicks on the button, open the modal
-      //- btn.onclick = function() {
-      //-   modal.style.display = "block";
-      //- }
-
-      //- // When the user clicks on <span> (x), close the modal
-      //- span.onclick = function() {
-      //-   modal.style.display = "none";
-      //- }
-
-      //- // When the user clicks anywhere outside of the modal, close it
-      //- window.onclick = function(event) {
-      //-   if (event.target == modal) {
-      //-     modal.style.display = "none";
-      //-   }
-      //- }

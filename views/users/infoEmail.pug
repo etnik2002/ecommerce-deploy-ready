@@ -33,16 +33,13 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
         form(action="/users/send-info-email", method="post" class="form-group") 
             br
             .form-elem(style="font-size:16px")
-                label(for="subject") Resaon*
+                label(for="subject") Subject*
                 input(type="text" name="subject" placeholder="Example: new discount" required class="form-control")
+
             br
             .form-elem(style="font-size:16px")
-                label(for="header") Email header*
-                input(type="text" name="header" placeholder="Example: Dear customer" required class="form-control")
-            br
-            .form-elem(style="font-size:16px")
-                label(for="username") Email content*
-                input(type="text" name="emailContent" placeholder="Example: 20% Discount in every product  " required class="form-control")
+                label(for="emailContent") Email content*
+                textarea(name="emailContent", cols="30", placeholder="Example: Dear customer..." rows="10" required class="form-control")
             
             br
             button(type="submit" class="btn btn-primary" value="Send email") Send email

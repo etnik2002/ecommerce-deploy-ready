@@ -1000,3 +1000,31 @@ i {
     left: -25px;
   }
 }
+
+.form-elem label {
+  color: black;
+}
+
+#spinnerDiv {
+  position: fixed;
+  z-index: 10000000;
+  background-color: black;
+  font-size: 20px;
+  border-radius: 50%;
+  color: white;
+  opacity: 0.6;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+#loading {
+  display: flex;
+  left: 35%;
+  position: relative;
+  margin: 0 auto;
+}

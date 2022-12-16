@@ -230,7 +230,6 @@ module.exports = {
     res.render('users/infoemail');
   },
   postSendInfoEmail: async (req, res) => {
-    const email_content = req.body.emailContent;
     const allUsers = await User.find({ userRole: 'user' });
     var emails = [];
     for (let i = 0; i < allUsers.length; i++) {
@@ -252,9 +251,9 @@ module.exports = {
 
     let info = await transporter.sendMail({
       from: 'etnikz2002@gmail.com',
-      to: emails,
+      to: 'etnikz2002@gmail.com',
       subject: req.body.subject,
-      text: req.body.header,
+      // text: req.body.header,
       html: req.body.emailContent,
       // html: `<h3>We hope this email finds you well. We wanted to remind you about our latest product line that was recently released. Our new products include [list of new products] and we believe they would make a great addition to your [product use].
 
