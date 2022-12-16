@@ -96,11 +96,6 @@ module.exports = {
   },
 
   viewProduct: async (req, res) => {
-    const client_id =
-      'AVDn0zM75RGU80cgKLF3P9vmkT7t3cc_N2k5u-pzfBCPWVDYlwF7c2sK_TIQkf5vhBBg7yD1-7E4avAf';
-    const client_secret =
-      'EIzs4sPcr3kHJPhrJ_hLuKvePQIbct-Onmniz3abrU15ZXqB2XDKD0kP5FXYRbwzj19Hfokl8pJVft3s';
-
     const categories = await Categories.find({ active: true }).sort({
       createdAt: 'desc',
     });
@@ -134,8 +129,6 @@ module.exports = {
       categories,
       prod,
       key,
-      client_secret,
-      client_id,
     });
   },
 
@@ -388,7 +381,6 @@ module.exports = {
       console.error(error);
     }
   },
-
   searchedProducts: async (req, res) => {
     let query = req.query.search;
     const user = await User.findById({ _id: req.user.id });
@@ -410,14 +402,11 @@ module.exports = {
             res.redirect('errors/404');
             console.error(err);
           }
-          if (!newSearch) {
-            res.redirect('/?seach=null&ERROR=true');
+          if (newSearch.length < 0) {
+            res.redirect('/');
           }
         }
       }
     );
   },
-
-
-  
 };

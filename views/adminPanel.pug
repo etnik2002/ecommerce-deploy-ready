@@ -64,8 +64,8 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.ms-auto.mb-2.mb-lg-0
           li.nav-item.dropdown
-            a#navbarDropdown.nav-link.dropdown-toggle.second-text.fw-bold(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')
-              i.fas.fa-user.me-2(style="color:lime")
+            a#navbarDropdown.nav-link.dropdown-toggle.second-text.fw-bold(href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false')(style="color:black")
+              i.fas.fa-user.me-2(style="color:black")
               | #{user.username}
             ul.dropdown-menu(aria-labelledby='navbarDropdown')
               li
@@ -106,7 +106,7 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
             div
               h3.fs-2 #{admins.length}
-              p(href="/users/allAdmins" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 View all admin accounts
+              a(href="/users/allAdmins" style="text-decoration:none; list-style-type:none; color:black" target="_blank").fs-5 View all admin accounts
             i.fas.fa-regular.fa-star.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         .col-md-3
           .p-3.bg-white.shadow-sm.d-flex.justify-content-around.align-items-center.rounded
@@ -139,9 +139,17 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
             i.fas.fa-chart-bar.fs-1.primary-text.border.rounded-full.secondary-bg.p-3
         if message.length > 0
           h1(class="alert alert-danger") #{message}
+      
+      
+    .container
+      .container(style="display:flex; margin: 0 auto; gap:80px")
+        div#chart
+          canvas#myChart
+
+        div#chart2
+          canvas#myChart2
+      
       .row.my-5
-
-
         h3.fs-4.mb-3 Last 10 orders
         
         a(href="/orders/allOrders" style="font-size:18px; width:30%; display:flex; margin: 0 auto; text-align:center;" class="btn btn-success") View all Orders
@@ -201,34 +209,102 @@ nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
                         button(class="btn btn-danger" type="submit") Cancel
 
 
-.container
-  div
-    canvas#myChart
+    
 
 script.
 
-  const ctx = document.getElementById('myChart');
-  new Chart(ctx, {
-  type: 'line',
-  data: {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  datasets: [{
-  label: 'data',
-  data: [4,341,5,6,43657],
-  borderWidth: 1
-  }]
-  },
-  options: {
-  scales: {
-  y: {
-  beginAtZero: true
-  }
-  }
-  }
-  });
+  const orders2022 = 'http://localhost:3000/orders/orders2022';
+  const orders2023 = 'http://localhost:3000/orders/orders2023';
+  const earnings2022 = 'http://localhost:3000/orders/earnings2022';
+  const earnings2023 = 'http://localhost:3000/orders/earnings2023';
+  const earningsLastMonth = 'http://localhost:3000/orders/last-month-earnings';
 
 
+  async function getProducts() {
 
+    //orders 2022
+    const response2022 = await fetch(orders2022);
+    allOrders2022 = await response2022.json();
+    console.log({allOrders2022})
+    const data2022 = allOrders2022.length;
+    console.log({data2022})
+
+    //orders 2023
+    const response2023 = await fetch(orders2023);
+    allOrders2023 = await response2023.json();
+    console.log({allOrders2023})
+    const data2023 = allOrders2023.length;
+    console.log({data2023})
+ 
+    //earnings from orders 2022
+    const earningsresponse2022 = await fetch(earnings2022);
+    let totalearnings2022 = await earningsresponse2022.json();
+    console.log({totalearnings2022})
+
+    //earnings from orders 2022
+    const earningsresponse2023 = await fetch(earnings2023);
+    let totalearnings2023 = await earningsresponse2023.json();
+    console.log({totalearnings2023})
+
+    // earnings last month
+    const earningsresponseLastMonth = await fetch(earningsLastMonth);
+    let totalEarningsLastMonth = await earningsresponseLastMonth.json();
+    console.log({totalEarningsLastMonth})
+
+
+    //ORDERS CHART
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx, {
+    type: 'pie',
+    data: {
+    labels: ["Total orders in 2022", "Total orders in 2023"],
+    datasets: [{
+    label: 'Total',
+    data: [data2022,data2023],
+    borderWidth: 2
+    }]
+    },
+    options: {
+    scales: {
+    y: {
+    beginAtZero: true
+    }
+    }
+    }
+    });
+
+    // EARNINGS CHART
+    const ctx2 = document.getElementById('myChart2');
+    new Chart(ctx2, {
+    type: 'bar',
+    data: {
+    //- labels: ["Total earnings (MKD) in 2022", "Total earnings (MKD) in 2023"],
+    labels: ["Total earnings (MKD) in 2022", "Total earnings (MKD) in 2023", "Total earnings (MKD) last 30 days"],
+    datasets: [{
+    label: 'Earnings in MKD',
+    data: [totalearnings2022,totalearnings2023,totalEarningsLastMonth],
+     backgroundColor: [
+      'rgba(255, 205, 86, 0.5)',
+      'rgba(153, 102, 255, 0.5)',
+      'rgba(255, 0, 0 , 0.5)',
+
+    ],
+    borderWidth: 2
+    }]
+    },
+    options: {
+    scales: {
+    y: {
+    beginAtZero: true
+    }
+    }
+    }
+    });
+
+  }
+  getProducts();
+
+  
 
 // /#page-content-wrapper
 script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js')
@@ -239,28 +315,6 @@ script.
   el.classList.toggle("toggled");
   };
 
-
-
-  var xValues = ["2022", "2023"];
-  var yValues = [55, 1];
-  var barColors = ["red", "green","blue","orange","brown"];
-  new Chart("myChart", {
-  type: "bar",
-  data: {
-  labels: xValues,
-  datasets: [{
-  backgroundColor: barColors,
-  data: yValues
-  }]
-  },
-  options: {
-  legend: {display: false},
-  title: {
-  display: true,
-  text: "Order data"
-  }
-  }
-  });
 
 
  

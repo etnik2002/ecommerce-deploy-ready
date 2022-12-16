@@ -100,7 +100,7 @@ block content
     .container
       h2(style="text-align:center; background-color:rgb(51, 51, 51); padding:10px; color:white") Choose products by their category
     br
-    .container#categories(style="display:flex; padding:10px; border-radius:20px;")
+    .container#categories(style="display:flex; padding:10px; border-radius:20px; background:white;")
       each category in categories 
         .prodCat
           a.category-name(href="/"+category._id style="text-align:center; font-size:18px; color:black; ") #{category.catName}
