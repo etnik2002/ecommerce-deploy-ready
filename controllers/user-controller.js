@@ -1,7 +1,5 @@
 const bcrypt = require('bcrypt');
 
-// import schemas
-
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
@@ -71,14 +69,7 @@ module.exports = {
         message: req.flash('success'),
       });
     } catch (error) {
-      // if (error) {
       console.log(error);
-      // res.render('users/profile', {
-      //   // user,
-      //   // likedProducts,
-      //   message: req.flash('error'),
-      // });
-      // }
     }
   },
 
@@ -234,5 +225,51 @@ module.exports = {
     } catch (error) {
       console.error(error);
     }
+  },
+  getSendInfoEmail: async (req, res) => {
+    res.render('users/infoemail');
+  },
+  postSendInfoEmail: async (req, res) => {
+    const email_content = req.body.emailContent;
+    const allUsers = await User.find({ userRole: 'user' });
+    var emails = [];
+    for (let i = 0; i < allUsers.length; i++) {
+      emails.push(allUsers[i].email);
+    }
+    console.log({ emails });
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      port: 587,
+      auth: {
+        user: 'etnikz2002@gmail.com',
+        pass: 'vysmnurlcmrzcwad',
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: 'etnikz2002@gmail.com',
+      to: emails,
+      subject: req.body.subject,
+      text: req.body.header,
+      html: req.body.emailContent,
+      // html: `<h3>We hope this email finds you well. We wanted to remind you about our latest product line that was recently released. Our new products include [list of new products] and we believe they would make a great addition to your [product use].
+
+      //   We would love for you to take a look at them and let us know if you have any questions or need any assistance.
+
+      //   Thank you for your continued business.</h3>
+      //   Sincerely,
+      //   Etnik Zeqiri
+      //   `,
+    });
+
+    console.log('Message sent: %s', info.messageId);
+
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+    res.redirect('/admin');
   },
 };

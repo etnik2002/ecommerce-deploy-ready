@@ -151,19 +151,6 @@ router.get('/admin', async (req, res) => {
 
   const totalOrders = await Order.find({ status: true });
 
-  const totalOrdersPriceSum = await Order.aggregate([
-    {
-      $group: {
-        _id: null,
-        total: {
-          $sum: '$productPrice',
-        },
-      },
-    },
-  ]);
-
-  console.log({ totalOrdersPriceSum });
-
   let total = 0;
   let takenFromTotal = 0;
   let totalPrice = 0;

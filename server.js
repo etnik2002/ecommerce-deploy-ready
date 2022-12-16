@@ -7,7 +7,6 @@ const MongoStore = require('connect-mongo');
 const path = require('path');
 const passport = require('passport');
 const bodyParser = require('body-parser');
-const Product = require('./models/Product');
 const { getSingleCatProducts } = require('./controllers/categories-controller');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
@@ -19,9 +18,6 @@ const categoriesRoutes = require('./routes/categories.js');
 const generalRoutes = require('./routes/general.js');
 const PORT = process.env.PORT || 3000;
 const lidhuMeDatabase = require('./database');
-const User = require('./models/User');
-const Categories = require('./models/Categories');
-const Order = require('./models/Order');
 
 const stripe = require('stripe')(process.env.STRIPE_TEST_SECRET_KEY);
 
@@ -40,7 +36,7 @@ app.use(require('connect-flash')());
 
 app.use(
   session({
-    secret: 'pulaTbardhaBmwMercedesZastava',
+    secret: process.env.OUR_SECRET,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({

@@ -19,6 +19,8 @@ const {
   adminGetAllUsers,
   getResetPassword,
   postResetPassword,
+  getSendInfoEmail,
+  postSendInfoEmail,
 } = require('../controllers/user-controller');
 
 router.get('/', getUsers);
@@ -71,5 +73,9 @@ router.get('/all-users', isCeo, adminGetAllUsers);
 router.get('/password-reset', getResetPassword);
 
 router.post('/password-reset', postResetPassword);
+
+router.get('/send-info-email', getSendInfoEmail);
+
+router.post('/send-info-email', postSendInfoEmail);
 
 module.exports = router;

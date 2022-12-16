@@ -1,0 +1,48 @@
+doctype html
+head
+meta(charset='UTF-8')
+meta(http-equiv='X-UA-Compatible' content='IE=edge')
+meta(name='viewport' content='width=device-width, initial-scale=1.0')
+link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' rel='stylesheet')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js')
+link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css')
+link(rel="stylesheet", href="/css/style.css")
+script(src='https://cdn.jsdelivr.net/npm/chart.js')
+
+
+nav.navbar.navbar-icon-top.navbar-expand-lg.navbar-dark.bg-dark
+      a.navbar-brand(href='/') ED-Store
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href='/')
+              i.fa.fa-home(style="color:lime")
+              | Home
+
+          li.nav-item
+            a.nav-link(href='/users/profile')
+              i.fa.fa-globe(style="color:lime")
+              | Profile
+
+
+.container
+  h1 Send info email to all users
+    .form-wrapper.create 
+        form(action="/users/send-info-email", method="post" class="form-group") 
+            br
+            .form-elem(style="font-size:16px")
+                label(for="subject") Resaon*
+                input(type="text" name="subject" placeholder="Example: new discount" required class="form-control")
+            br
+            .form-elem(style="font-size:16px")
+                label(for="header") Email header*
+                input(type="text" name="header" placeholder="Example: Dear customer" required class="form-control")
+            br
+            .form-elem(style="font-size:16px")
+                label(for="username") Email content*
+                input(type="text" name="emailContent" placeholder="Example: 20% Discount in every product  " required class="form-control")
+            
+            br
+            button(type="submit" class="btn btn-primary" value="Send email") Send email
