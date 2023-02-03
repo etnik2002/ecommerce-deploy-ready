@@ -93,7 +93,7 @@ html
                     a(href='/categories/allCategories') Edit Categories
 
     if user.userRole == 'ceo'
-      section(style='background-color: #eee;')
+      section(style='background-color: #eee;' class="")
         h1(style="text-align:center; display:flex; justify-content:center") Ceo Section
 
         .container.py-5
@@ -174,12 +174,13 @@ html
                     //- if message.length > 0
                     //-   .container
                     //-     h1(class="alert alert-success") #{message}
-                        
+
+                    
         if user.orders.length > 0
-          .row
+          .row(style="")
             .col-sm-3
               p.mb-0 Your orders :
-            .col-sm-9
+            .col-sm-9(id="col")
                 table.table
                   thead
                     tr
@@ -188,7 +189,6 @@ html
                       th(scope='col') Status
                       th(scope='col') Original Price
                       th(scope='col') Image
-                      //- th(scope='col') Status
                   tbody
                     each order in userOrders
 

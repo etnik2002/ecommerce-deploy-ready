@@ -609,6 +609,9 @@ h3.text {
   .bsp_big-image {
     display: none;
   }
+
+
+
 }
 
 @media (max-width: 1080px) {
@@ -1008,23 +1011,38 @@ i {
 #spinnerDiv {
   position: fixed;
   z-index: 10000000;
-  background-color: black;
   font-size: 20px;
+  border: 3px solid black;
   border-radius: 50%;
   color: white;
   opacity: 0.6;
-  width: 500px;
-  height: 500px;
   display: flex;
   margin: 0 auto;
   align-items: center;
   text-align: center;
   justify-content: center;
+  border: 10px solid #f3f3f3;
+  border-top: 10px solid #0a3450;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 #loading {
   display: flex;
-  left: 35%;
+  left: 50%;
+  top: 200px;
   position: relative;
   margin: 0 auto;
 }
